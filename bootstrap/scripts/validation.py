@@ -6,7 +6,7 @@ import netaddr
 import sys
 
 DISTRIBUTIONS = ["k0s", "k3s", "talos"]
-GLOBAL_CLI_TOOLS = ["age", "cloudflared", "flux", "sops", "jq", "kubeconform", "kustomize"]
+GLOBAL_CLI_TOOLS = ["age", "flux", "sops", "jq", "kubeconform", "kustomize"]
 TALOS_CLI_TOOLS = ["talosctl", "talhelper"]
 K0S_CLI_TOOLS = ["k0sctl"]
 

@@ -15,7 +15,6 @@ containerRuntime:
   #% endif %#
 endpointRoutes:
   enabled: true
-#% if cloudflare.enabled %#
 hubble:
   enabled: true
   metrics:
@@ -44,16 +43,15 @@ hubble:
     rollOutPods: true
     ingress:
       enabled: true
-      className: internal
+      className: cilium
+      annotations:
+        cert-manager.io/issuer: ca-issuer
       hosts:
         - "hubble.${SECRET_DOMAIN}"
       tls:
         - hosts:
             - "hubble.${SECRET_DOMAIN}"
-#% else %#
-hubble:
-  enabled: false
-#% endif %#
+          secretName: hubble-tls-certificate
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"

@@ -6,60 +6,43 @@ talosVersion: v1.6.3
 kubernetesVersion: v1.29.1
 
 clusterName: &cluster home-kubernetes
-endpoint: https://#{ cluster.endpoint_vip }#:6443
+endpoint: https://10.20.0.10:6443
 clusterPodNets:
-  - "#{ cluster.pod_network.split(',')[0] }#"
+  - "20.69.0.0/16"
 clusterSvcNets:
-  - "#{ cluster.service_network.split(',')[0] }#"
+  - "20.96.0.0/16"
 additionalApiServerCertSans: &sans
-  - "#{ cluster.endpoint_vip }#"
+  - "10.20.0.10"
   - 127.0.0.1
-  #% for item in cluster.tls_sans %#
-  - "#{ item }#"
-  #% endfor %#
 additionalMachineCertSans: *sans
 cniConfig:
   name: none
 
 nodes:
-  #% for item in cluster.nodes.inventory %#
-  - hostname: "#{ item.name }#.${domain_name}"
-    ipAddress: "#{ item.address }#"
-    #% if item.talos_disk_device.startswith('/') %#
-    installDisk: "#{ item.talos_disk_device }#"
-    #% else %#
-    installDiskSelector:
-      serial: "#{ item.talos_disk_device }#"
-    #% endif %#
-    #% if item.controller %#
+  - hostname: "zephyrus.${domain_name}"
+    ipAddress: "10.20.0.11"
+    installDisk: "/dev/mmcblk0"
     controlPlane: true
-    #% else %#
-    controlPlane: false
-    #% endif %#
     networkInterfaces:
       - interface: eth0
         dhcp: false
         addresses:
-          - "#{ item.address }#/#{ cluster.nodes.host_network.split('/') | last }#"
+          - "10.20.0.11/24"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0
-            gateway: "#{ cluster.nodes.host_network | nthhost(1) }#"
-        #% if item.controller %#
+            gateway: "10.20.0.1"
         vip:
-          ip: "#{ cluster.endpoint_vip }#"
-        #% endif %#
-    #% if item.talos_patches is defined and item.talos_patches | length > 0 %#
+          ip: "10.20.0.10"
     patches:
-    #% for patch in item.talos_patches %#
       - |-
-#%- filter indent(width=8) %#
-
-#{ patch }#
-#% endfilter %#
-    #% endfor %#
-    #% endif %#
-  #% endfor %#
+        machine:
+          install:
+            extensions:
+              - image: ghcr.io/nberlee/rk3588:v1.6.3
+          kernel:
+            modules:
+              - name: rockchip-cpufreq
 
 patches: ${patches}
 
@@ -104,7 +87,7 @@ controlPlane:
             rotate-server-certificates: true
           nodeIP:
             validSubnets:
-              - "#{ cluster.nodes.host_network }#"
+              - "10.20.0.0/24"
 
     # Enable KubePrism
     - &kubePrismPatch |-
@@ -119,9 +102,7 @@ controlPlane:
       machine:
         network:
           nameservers:
-            #% for item in cluster.nodes.dns_servers %#
-            - #{ item }#
-            #% endfor %#
+            - 10.20.0.1
 
     # Configure NTP
     - &ntpPatch |-
@@ -129,7 +110,7 @@ controlPlane:
         time:
           disabled: false
           servers:
-            - #{ cluster.nodes.ntp }#
+            - 10.20.0.1
 
     # Custom sysctl settings
     - &sysctlPatch |-
@@ -159,7 +140,7 @@ controlPlane:
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
           advertisedSubnets:
-            - "#{ cluster.nodes.host_network }#"
+            - "10.20.0.0/24"
 
     # Disable default API server admission plugins.
     - |-
