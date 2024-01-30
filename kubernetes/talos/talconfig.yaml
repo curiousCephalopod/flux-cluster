@@ -5,21 +5,18 @@ talosVersion: v1.6.3
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.29.1
 
-clusterName: &cluster home-kubernetes
-endpoint: https://10.20.0.10:6443
+clusterName: &cluster winds
+endpoint: https://zephyrus.othrys.chaos:6443
 clusterPodNets:
   - "20.69.0.0/16"
 clusterSvcNets:
   - "20.96.0.0/16"
-additionalApiServerCertSans: &sans
-  - "10.20.0.10"
-  - 127.0.0.1
-additionalMachineCertSans: *sans
 cniConfig:
   name: none
 
 nodes:
-  - hostname: "zephyrus.${domain_name}"
+  - hostname: "zephyrus.${physical_domain}"
+    talosImageURL: "ghcr.io/nberlee/installer"
     ipAddress: "10.20.0.11"
     installDisk: "/dev/mmcblk0"
     controlPlane: true
@@ -32,19 +29,50 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: "10.20.0.1"
-        vip:
-          ip: "10.20.0.10"
     patches:
       - |-
         machine:
-          install:
-            extensions:
-              - image: ghcr.io/nberlee/rk3588:v1.6.3
           kernel:
             modules:
               - name: rockchip-cpufreq
+  - hostname: "notus.${physical_domain}"
+    ipAddress: "10.20.0.12"
+    installDisk: "/dev/mmcblk0"
+    controlPlane: false
+    networkInterfaces:
+      - interface: eth0
+        dhcp: false
+        addresses:
+          - "10.20.0.12/24"
+        mtu: 1500
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "10.20.0.1"
 
-patches: ${patches}
+patches:
+  - |-
+    machine:
+      files:
+        - content: "${ca_chain}"
+          permissions: 0644
+          path: /etc/ssl/certs/ca-certificates
+          op: append
+  - |-
+    machine:
+      registries:
+        mirrors:
+          docker.io:
+            endpoints:
+              - https://dockerio.${mirrors_domain}
+          gcr.io:
+            endpoints:
+              - https://gcrio.${mirrors_domain}
+          ghcr.io:
+            endpoints:
+              - https://ghcrio.${mirrors_domain}
+          registry.k8s.io:
+            endpoints:
+              - https://k8sio.${mirrors_domain}
 
 controlPlane:
   patches:

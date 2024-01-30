@@ -1,11 +1,4 @@
-domain_name: "#{ cluster.nodes.domain_name }#"
-#% if cluster.nodes.talos_patches is defined and cluster.nodes.talos_patches | length > 0 %#
-patches:
-#% for patch in cluster.nodes.talos_patches %#
-- |-
-#%- filter indent(width=2) %#
-
-#{ patch }#
-#% endfilter %#
-#% endfor %#
-#% endif %#
+physical_domain: "#{ physical_domain }#"
+mirrors_domain: "#{ mirrors_domain }#"
+cluster_domain: "#{ cluster_domain }#"
+ca_chain: #{ ca_chain }#

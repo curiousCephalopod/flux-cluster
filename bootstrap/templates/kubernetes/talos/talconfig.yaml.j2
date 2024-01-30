@@ -5,25 +5,28 @@ talosVersion: v1.6.3
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.29.1
 
-clusterName: &cluster home-kubernetes
-endpoint: https://#{ cluster.endpoint_vip }#:6443
+clusterName: &cluster #{ cluster.name }#
+endpoint: https://#{ cluster.endpoint }#:6443
 clusterPodNets:
   - "#{ cluster.pod_network.split(',')[0] }#"
 clusterSvcNets:
   - "#{ cluster.service_network.split(',')[0] }#"
+#% if cluster.tls_sans | length > 0 %#
 additionalApiServerCertSans: &sans
-  - "#{ cluster.endpoint_vip }#"
-  - 127.0.0.1
   #% for item in cluster.tls_sans %#
   - "#{ item }#"
   #% endfor %#
 additionalMachineCertSans: *sans
+#% endif %#
 cniConfig:
   name: none
 
 nodes:
   #% for item in cluster.nodes.inventory %#
-  - hostname: "#{ item.name }#.${domain_name}"
+  - hostname: "#{ item.name }#.${physical_domain}"
+    #% if item.installer is defined %#
+    talosImageURL: "#{ item.installer }#"
+    #% endif %#
     ipAddress: "#{ item.address }#"
     #% if item.talos_disk_device.startswith('/') %#
     installDisk: "#{ item.talos_disk_device }#"
@@ -45,10 +48,6 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: "#{ cluster.nodes.host_network | nthhost(1) }#"
-        #% if item.controller %#
-        vip:
-          ip: "#{ cluster.endpoint_vip }#"
-        #% endif %#
     #% if item.talos_patches is defined and item.talos_patches | length > 0 %#
     patches:
     #% for patch in item.talos_patches %#
@@ -61,7 +60,30 @@ nodes:
     #% endif %#
   #% endfor %#
 
-patches: ${patches}
+patches:
+  - |-
+    machine:
+      files:
+        - content: "${ca_chain}"
+          permissions: 0644
+          path: /etc/ssl/certs/ca-certificates
+          op: append
+  - |-
+    machine:
+      registries:
+        mirrors:
+          docker.io:
+            endpoints:
+              - https://dockerio.${mirrors_domain}
+          gcr.io:
+            endpoints:
+              - https://gcrio.${mirrors_domain}
+          ghcr.io:
+            endpoints:
+              - https://ghcrio.${mirrors_domain}
+          registry.k8s.io:
+            endpoints:
+              - https://k8sio.${mirrors_domain}
 
 controlPlane:
   patches:

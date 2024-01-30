@@ -5,7 +5,7 @@ bpf:
 bgp:
   enabled: false
 cluster:
-  name: home-kubernetes
+  name: winds
   id: 1
 containerRuntime:
   integration: containerd
