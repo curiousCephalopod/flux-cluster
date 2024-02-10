@@ -91,6 +91,12 @@ spec:
     loadBalancer:
       algorithm: maglev
       mode: dsr
+    l7Proxy: true
+    ingressController:
+      enabled: true
+      default: true
+      enforceHttps: true
+      loadBalancerMode: shared
     localRedirectPolicy: true
     operator:
       replicas: 1
