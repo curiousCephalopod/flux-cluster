@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: "Flux Diff"
 
 on:
@@ -44,7 +45,7 @@ jobs:
             --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
             --limit-bytes 10000
             --all-namespaces
-            --sources "winds"
+            --sources "home-kubernetes"
             --output-file diff.patch
 
       - name: Generate Diff
