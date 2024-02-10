@@ -1,5 +1,5 @@
 autoDirectNodeRoutes: true
-{% if distribution.talos.bgp.enabled %}
+{% if bgp.enabled %}
 bgpControlPlane:
   enabled: true
 {% endif %}
@@ -33,7 +33,7 @@ k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  {% if ( (distribution.talos.bgp.enabled) or
+  {% if ( (bgp.enabled) or
           (feature_gates.dual_stack_ipv4_first) ) %}
   # https://github.com/cilium/cilium/issues/28985
   enabled: false
