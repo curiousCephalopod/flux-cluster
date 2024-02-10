@@ -5,10 +5,9 @@ from zoneinfo import available_timezones
 import netaddr
 import sys
 
-DISTRIBUTIONS = ["k0s", "k3s", "talos"]
+DISTRIBUTIONS = ["talos"]
 GLOBAL_CLI_TOOLS = ["age", "flux", "sops", "jq", "kubeconform", "kustomize"]
 TALOS_CLI_TOOLS = ["talosctl", "talhelper"]
-K0S_CLI_TOOLS = ["k0sctl"]
 
 
 def required(*keys: str):
@@ -47,9 +46,6 @@ def validate_cli_tools(distribution: str, **_) -> None:
         if not which(tool):
             raise ValueError(f"Missing required CLI tool {tool}")
     for tool in TALOS_CLI_TOOLS if distribution in ["talos"] else []:
-        if not which(tool):
-            raise ValueError(f"Missing required CLI tool {tool}")
-    for tool in K0S_CLI_TOOLS if distribution in ["k0s"] else []:
         if not which(tool):
             raise ValueError(f"Missing required CLI tool {tool}")
 
@@ -98,6 +94,9 @@ def validate_cluster_networks(cluster: dict, feature_gates: dict, **_) -> None:
 
 
 def massage_config(data: dict) -> dict:
+    data["distribution"] = data.get("distribution", "")
+    data["nodes"] = data.get("nodes", [])
+    data["cluster"] = data.get("cluster", {})
     data["flux"] = data.get("flux", {})
     data["cloudflare"] = data.get("cloudflare", {})
     data["feature_gates"] = data.get("feature_gates", {})

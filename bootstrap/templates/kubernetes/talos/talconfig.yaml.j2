@@ -1,64 +1,71 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 ---
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: v1.6.3
+talosVersion: v1.6.4
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.29.1
 
-clusterName: &cluster #{ cluster.name }#
-endpoint: https://#{ cluster.endpoint }#:6443
+clusterName: &cluster {{ cluster.name }}
+endpoint: https://{{ cluster.endpoint }}:6443
 clusterPodNets:
-  - "#{ cluster.pod_network.split(',')[0] }#"
+  - "{{ cluster.pod_network.split(',')[0] }}"
 clusterSvcNets:
-  - "#{ cluster.service_network.split(',')[0] }#"
-#% if cluster.tls_sans | length > 0 %#
+  - "{{ cluster.service_network.split(',')[0] }}"
+{% if cluster.tls_sans | length > 0 %}
 additionalApiServerCertSans: &sans
-  #% for item in cluster.tls_sans %#
-  - "#{ item }#"
-  #% endfor %#
+  {% for item in cluster.tls_sans %}
+  - "{{ item }}"
+  {% endfor %}
 additionalMachineCertSans: *sans
-#% endif %#
+{% endif %}
 cniConfig:
   name: none
 
 nodes:
-  #% for item in cluster.nodes.inventory %#
-  - hostname: "#{ item.name }#.${physical_domain}"
-    #% if item.installer is defined %#
-    talosImageURL: "#{ item.installer }#"
-    #% endif %#
-    ipAddress: "#{ item.address }#"
-    #% if item.talos_disk_device.startswith('/') %#
-    installDisk: "#{ item.talos_disk_device }#"
-    #% else %#
+  {% for item in cluster.nodes.inventory %}
+  - hostname: "{{ item.name }}.${physical_domain}"
+    {% if item.installer is defined %}
+    talosImageURL: "{{ item.installer }}"
+    {% endif %}
+    ipAddress: "{{ item.address }}"
+    {% if item.talos_disk_device.startswith('/') %}
+    installDisk: "{{ item.talos_disk_device }}"
+    {% else %}
     installDiskSelector:
-      serial: "#{ item.talos_disk_device }#"
-    #% endif %#
-    #% if item.controller %#
-    controlPlane: true
-    #% else %#
-    controlPlane: false
-    #% endif %#
+      serial: "{{ item.talos_disk_device }}"
+    {% endif %}
+    controlPlane: {{ (item.controller) | string | lower }}
     networkInterfaces:
       - interface: eth0
         dhcp: false
+        {% if cluster.vlan %}
+        vlans:
+          - vlanId: {{ cluster.vlan }}
+            addresses:
+              - "{{ item.address }}/{{ cluster.nodes.host_network.split('/') | last }}"
+            mtu: 1500
+            routes:
+              - network: 0.0.0.0/0
+                gateway: "{{ cluster.nodes.host_network | nthhost(1) }}"
+        {% else %}
         addresses:
-          - "#{ item.address }#/#{ cluster.nodes.host_network.split('/') | last }#"
+          - "{{ item.address }}/{{ cluster.nodes.host_network.split('/') | last }}"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0
-            gateway: "#{ cluster.nodes.host_network | nthhost(1) }#"
-    #% if item.talos_patches is defined and item.talos_patches | length > 0 %#
+            gateway: "{{ cluster.nodes.host_network | nthhost(1) }}"
+        {% endif %}
+    {% if item.talos_patches is defined and item.talos_patches | length > 0 %}
     patches:
-    #% for patch in item.talos_patches %#
+    {% for patch in item.talos_patches %}
       - |-
-#%- filter indent(width=8) %#
+{%- filter indent(width=8) %}
 
-#{ patch }#
-#% endfilter %#
-    #% endfor %#
-    #% endif %#
-  #% endfor %#
+{{ patch }}
+{% endfilter %}
+    {% endfor %}
+    {% endif %}
+  {% endfor %}
 
 patches:
   - |-
@@ -86,6 +93,11 @@ patches:
               - https://k8sio.${mirrors_domain}
 
 controlPlane:
+{% if cluster.schematics.enabled %}
+  schematic:
+    customization:
+{{ cluster.schematics.customization | indent(6, first=True) }}
+{% endif %}
   patches:
     # Configure containerd
     - &containerdPatch |-
@@ -123,10 +135,12 @@ controlPlane:
       machine:
         kubelet:
           extraArgs:
+            image-gc-low-threshold: 50
+            image-gc-high-threshold: 55
             rotate-server-certificates: true
           nodeIP:
             validSubnets:
-              - "#{ cluster.nodes.host_network }#"
+              - "{{ cluster.nodes.host_network }}"
 
     # Enable KubePrism
     - &kubePrismPatch |-
@@ -141,9 +155,9 @@ controlPlane:
       machine:
         network:
           nameservers:
-            #% for item in cluster.nodes.dns_servers %#
-            - #{ item }#
-            #% endfor %#
+            {% for item in cluster.nodes.dns_servers | default(['1.1.1.1', '1.0.0.1']) %}
+            - {{ item }}
+            {% endfor %}
 
     # Configure NTP
     - &ntpPatch |-
@@ -151,7 +165,7 @@ controlPlane:
         time:
           disabled: false
           servers:
-            - #{ cluster.nodes.ntp }#
+            - {{ cluster.nodes.ntp }}
 
     # Custom sysctl settings
     - &sysctlPatch |-
@@ -181,14 +195,31 @@ controlPlane:
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
           advertisedSubnets:
-            - "#{ cluster.nodes.host_network }#"
+            - "{{ cluster.nodes.host_network }}"
 
     # Disable default API server admission plugins.
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl
 
+    # Enable K8s Talos API Access
+    - |-
+      machine:
+        features:
+          kubernetesTalosAPIAccess:
+            enabled: true
+            allowedRoles:
+              - os:admin
+            allowedKubernetesNamespaces:
+              - system-upgrade
+
+{% if nodes.inventory | selectattr('controller', 'equalto', False) | list | length %}
 worker:
+{% if cluster.schematics.enabled %}
+  schematic:
+    customization:
+{{ cluster.schematics.customization | indent(6, first=True) }}
+{% endif %}
   patches:
     - *containerdPatch
     - *disableSearchDomainPatch
@@ -198,3 +229,4 @@ worker:
     - *nameserverPatch
     - *ntpPatch
     - *sysctlPatch
+{% endif %}

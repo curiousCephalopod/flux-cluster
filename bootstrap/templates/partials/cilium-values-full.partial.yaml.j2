@@ -3,16 +3,15 @@ bpf:
   masquerade: true
 bgp:
   enabled: false
+cgroup:
+  automount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
 cluster:
-  name: #{ cluster.name }#
+  name: {{ cluster.name }}
   id: 1
 containerRuntime:
   integration: containerd
-  #% if distribution in ['k3s'] %#
-  socketPath: /var/run/k3s/containerd/containerd.sock
-  #% elif distribution in ['k0s'] %#
-  socketPath: /var/run/k0s/containerd.sock
-  #% endif %#
 endpointRoutes:
   enabled: true
 hubble:
@@ -55,34 +54,22 @@ hubble:
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"
-#% if feature_gates.dual_stack_ipv4_first %#
+{% if feature_gates.dual_stack_ipv4_first %}
 ipv6NativeRoutingCIDR: "${CLUSTER_CIDR_V6}"
 ipv6:
   enabled: true
-#% endif %#
-#% if distribution in ['k3s'] %#
-k8sServiceHost: 127.0.0.1
-k8sServicePort: 6444
-#% elif distribution in ['k0s'] %#
-k8sServiceHost: localhost
-k8sServicePort: 7443
-#% elif distribution in ['talos'] %#
+{% endif %}
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
-#% endif %#
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  #% if feature_gates.dual_stack_ipv4_first %#
+  {% if feature_gates.dual_stack_ipv4_first %}
   # https://github.com/cilium/cilium/issues/28985
   enabled: false
-  #% else %#
+  {% else %}
   enabled: true
-  # https://github.com/cilium/cilium/issues/26586
-  leaseDuration: 120s
-  leaseRenewDeadline: 60s
-  leaseRetryPeriod: 1s
-  #% endif %#
+  {% endif %}
 loadBalancer:
   algorithm: maglev
   mode: dsr
@@ -90,7 +77,40 @@ localRedirectPolicy: true
 operator:
   replicas: 1
   rollOutPods: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  dashboards:
+    enabled: true
+    annotations:
+      grafana_folder: Cilium
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    trustCRDsExist: true
+dashboards:
+  enabled: true
+  annotations:
+    grafana_folder: Cilium
 rollOutCiliumPods: true
 routingMode: native
 securityContext:
-  privileged: true
+  capabilities:
+    ciliumAgent:
+      - CHOWN
+      - KILL
+      - NET_ADMIN
+      - NET_RAW
+      - IPC_LOCK
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    cleanCiliumState:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_RESOURCE

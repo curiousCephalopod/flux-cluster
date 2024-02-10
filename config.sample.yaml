@@ -7,6 +7,29 @@ timezone: ""
 
 # (Required) Cluster details
 cluster:
+  # schematics:
+  #   # (Required) Disabling the schematic will disable the system-upgrade-controller and any
+  #   #   additional Talos customization you have defined.
+  #   enabled: false
+  #   # (Required) For use with the system-upgrade-controller generate a schematic ID
+  #   #   based on your System Extension requirements https://factory.talos.dev/
+  #   id: ""
+  #   # (Required) Additional NodeConfigs to apply to all nodes
+  #   #   See: https://budimanjojo.github.io/talhelper/latest/reference/configuration/#nodeconfigs
+  #   customization: |-
+  #     extraKernelArgs:
+  #       - net.ifnames=0
+  #     systemExtensions:
+  #       officialExtensions:
+  #         - siderolabs/intel-ucode
+  #         - siderolabs/i915-ucode
+  # # (Optional) Add vlan tag to network master device
+  # #   See: https://www.talos.dev/latest/advanced/advanced-networking/#vlans
+  # vlan: 1
+  # (Required) Cluster name
+  name: ""
+  # (Required) Talos API endpoint
+  endpoint: ""
   # (Required) The nodes section is used to configure your cluster nodes
   nodes:
     # (Required) CIDR your nodes are on (e.g. 192.168.1.0/24)
@@ -21,6 +44,8 @@ cluster:
     #   there is no guarantee that the first DNS server will be used.
     dns_servers:
       - "1.1.1.1"
+    # (Required) Cluster NTP server
+    ntp: ""
     # (Optional) The DNS search domain to use for the nodes.
     # Leave this option blank to avoid possible DNS issues inside the cluster.
     search_domain: ""
@@ -30,8 +55,8 @@ cluster:
       # - name: ""               # Name of the node (must match [a-z0-9-\.]+)
       #   address: ""            # IP address of the node
       #   controller: true       # (Required) Set to true if this is a controller node
-      #   ssh_username: ""       # (Required: k3s/k0s) SSH username of the node
       #   talos_disk_device: ""  # (Required: Talos) Device Path or Serial number of Disk for this node
+      #   talos_patches: ""      # Talos device specific patches
       # ...
   # (Required) The pod CIDR for the cluster, this must NOT overlap with any
   #   existing networks and is usually a /16 (64K IPs).
@@ -60,54 +85,40 @@ flux:
     address: ""
     # (Required) Github repository branch
     branch: main
-    # (Required) Options for Flux Github webhook
-    webhook:
-      # (Required) Enable to use Github push-based sync
-      enabled: true
-      # Token for Github push-based sync (openssl rand -hex 16)
-      token: ""
+    # (Required) Private key for Flux to access the GitHub repository
+    private:
+      # (Required) Enable to use a private GitHub repository
+      enabled: false
+      # Private key for Flux to access the GitHub repository
+      #   1. Generate a new key with the following command:
+      #      > ssh-keygen -t ecdsa -b 521 -C "github-deploy-key" -f github-deploy.key -q -P ""
+      #   2. Make sure to paste public key from "github-deploy.key.pub" into
+      #      the deploy keys section of your repository settings.
+      #   3. Uncomment and paste the private key below
+      # key: |
+      #   -----BEGIN OPENSSH PRIVATE KEY-----
+      #   ...
+      #   -----END OPENSSH PRIVATE KEY-----
   # (Required) Age Public Key (e.g. age15uzrw396e67z9wdzsxzdk7ka0g2gr3l460e0slaea563zll3hdfqwqxdta)
   sops_age_public_key: ""
 
-# (Required) Cloudflare details - Cloudflare is used for DNS, TLS certificates and tunneling.
-# IMPORTANT: All options are ignored if cloudflare is disabled and no resources
-#   outside a bare Flux setup will be deployed to your cluster if Flux is enabled.
-cloudflare:
-  # (Required) Disable to use a different DNS provider
-  enabled: true
-  # (Required) Cloudflare Domain
-  domain: ""
-  # (Required) Cloudflare API Token (NOT API Key)
-  token: ""
-  # (Required) Optionals for Cloudflare Acme
-  acme:
-    # (Required) Email you want to be associated with the ACME account (used for TLS certs via letsencrypt.org)
-    email: ""
-    # (Required) Use the ACME production server when requesting the wildcard certificate.
-    #   By default the ACME staging server is used. This is to prevent being rate-limited.
-    #   Update this option to `true` when you have verified the staging certificate
-    #   works and then re-run `task configure` and push your changes to Github.
-    production: false
-  # (Required) Provide LAN access to the cluster ingresses for internal ingress classes
-  # The Load balancer IP for internal ingress, choose an available IP
-  #   in your nodes host network that is NOT being used. This is announced over L2.
-  ingress_vip: ""
-  # (Required) Gateway is used for providing DNS to your cluster on LAN
-  # The Load balancer IP for k8s_gateway, choose an available IP
-  #   in your nodes host network that is NOT being used. This is announced over L2.
-  gateway_vip: ""
-  # (Required) Options for Cloudflare Tunnel
-  tunnel:
-    # (Required) Cloudflare Account ID (cat ~/.cloudflared/*.json | jq -r .AccountTag)
-    account_id: ""
-    # (Required) Cloudflared Tunnel ID (cat ~/.cloudflared/*.json | jq -r .TunnelID)
-    id: ""
-    # (Required) Cloudflared Tunnel Secret (cat ~/.cloudflared/*.json | jq -r .TunnelSecret)
-    secret: ""
-    # (Required) Provide WAN access to the cluster ingresses for external ingress classes
-    # The Load balancer IP for external ingress, choose an available IP
-    #   in your nodes host network that is NOT being used. This is announced over L2.
-    ingress_vip: ""
+# (Required) Host domain
+physical_domain: ""
+# (Required) Image mirrors domain
+mirrors_domain: ""
+# (Required) Cluster domain
+cluster_domain: ""
+
+# (Required) CA chain to trust (single line, with escaped newlines like \\n)
+ca_chain: ""
+
+# (Required) CertManager certificates
+certmanager:
+  tls:
+    # (Required) Local CA Issuer certificate, with chain
+    crt: ""
+    # (Required) Local CA Issuer key
+    key: ""
 
 # (Optional) Feature gates are used to enable experimental features
 feature_gates:

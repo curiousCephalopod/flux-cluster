@@ -6,10 +6,10 @@ resources:
   - ./cilium.yaml
   - ./jetstack.yaml
   - ./metrics-server.yaml
-  #% if distribution in ['talos'] %#
+  {% if distribution in ['talos'] %}
   - ./postfinance.yaml
-  #% endif %#
+  {% endif %}
   - ./stakater.yaml
-  #% if distribution in ['k0s', 'talos'] %#
+  {% if distribution in ['k0s', 'talos'] %}
   - ./xenitab.yaml
-  #% endif %#
+  {% endif %}
