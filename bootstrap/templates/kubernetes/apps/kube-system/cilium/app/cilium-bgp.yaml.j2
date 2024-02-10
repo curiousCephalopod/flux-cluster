@@ -13,11 +13,11 @@ spec:
       neighbors:
         {% if bgp.peers %}
         {% for item in bgp.peers %}
-        - peerAddress: "{{ item }}/32"
+        - peerAddress: "{{ item }}/24"
           peerASN: {{ bgp.peer_asn }}
         {% endfor %}
         {% else %}
-        - peerAddress: "{{ cluster.nodes.host_network | nthhost(1) }}/32"
+        - peerAddress: "{{ cluster.nodes.host_network | nthhost(1) }}/24"
           peerASN: {{ bgp.peer_asn }}
         {% endif %}
           eBGPMultihopTTL: 10
