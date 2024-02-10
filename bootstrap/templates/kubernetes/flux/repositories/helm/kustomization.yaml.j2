@@ -6,10 +6,7 @@ resources:
   - ./cilium.yaml
   - ./jetstack.yaml
   - ./metrics-server.yaml
-  {% if distribution in ['talos'] %}
   - ./postfinance.yaml
-  {% endif %}
   - ./stakater.yaml
-  {% if distribution in ['k0s', 'talos'] %}
   - ./xenitab.yaml
-  {% endif %}
+  - ./k8s-gateway.yaml
