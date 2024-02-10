@@ -5,7 +5,7 @@ talosVersion: v1.6.4
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.29.1
 
-clusterName: &cluster {{ cluster.name }}
+clusterName: &cluster winds
 endpoint: https://{{ cluster.endpoint }}:6443
 clusterPodNets:
   - "{{ cluster.pod_network.split(',')[0] }}"
