@@ -23,6 +23,7 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    watchedResources: ["Ingress"]
     fullnameOverride: k8s-gateway
     domain: "${SECRET_DOMAIN}"
     ttl: 1
@@ -31,4 +32,6 @@ spec:
       port: 53
       annotations:
         io.cilium/lb-ipam-ips: "20.20.0.200"
+      labels:
+        expose-bgp: "true"
       externalTrafficPolicy: Cluster

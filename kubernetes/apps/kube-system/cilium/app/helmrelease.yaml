@@ -96,7 +96,10 @@ spec:
       enabled: true
       default: true
       enforceHttps: true
-      loadBalancerMode: shared
+      loadbalancerMode: shared
+      service:
+        labels:
+          expose-bgp: "true"
     localRedirectPolicy: true
     operator:
       replicas: 1
