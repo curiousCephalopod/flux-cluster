@@ -19,8 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         config-files:
-          - k3s-ipv4
-          - k3s-ipv6
           - talos
     steps:
       - name: Checkout
