@@ -80,7 +80,7 @@ spec:
         enabled: true
         className: cilium
         annotations:
-          cert-manager.io/issuer: ca-issuer
+          cert-manager.io/cluster-issuer: ca-issuer
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
