@@ -21,7 +21,8 @@ nodes:
     installDisk: "/dev/mmcblk0"
     controlPlane: true
     networkInterfaces:
-      - interface: eth0
+      - deviceSelector:
+          hardwareAddr: "f2:0b:f9:64:33:23"
         dhcp: false
         addresses:
           - "10.20.0.11/24"
@@ -38,9 +39,10 @@ nodes:
   - hostname: "notus.${physical_domain}"
     ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
-    controlPlane: false
+    controlPlane: true
     networkInterfaces:
-      - interface: eth0
+      - deviceSelector:
+          hardwareAddr: "d8:3a:dd:90:fb:b7"
         dhcp: false
         addresses:
           - "10.20.0.12/24"
