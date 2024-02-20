@@ -14,3 +14,4 @@ resources:
   - ./external-secrets.yaml
   - ./piraeus.yaml
   - ./rook-ceph.yaml
+  - ./1password.yaml
