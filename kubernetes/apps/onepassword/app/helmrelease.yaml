@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: onepassword-connect
+  name: connect
 spec:
   interval: 30m
   chart:
@@ -23,8 +23,5 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    credentialsName: op-credentials
     operator:
       create: true
-      token:
-        name: op-credentials
