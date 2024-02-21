@@ -24,6 +24,10 @@ tasks:
         ingresses
         pods
 
+  events:
+    desc: Get events sorted by modified time
+    cmd: kubectl get events -A --sort-by='.metadata.creationTimestamp'
+
   kubeconform:
     desc: Validate Kubernetes manifests with kubeconform
     cmd: |
