@@ -9,7 +9,7 @@ helmCharts:
     releaseName: kubelet-csr-approver
     namespace: kube-system
     valuesInline:
-      providerRegex: ^(zephyrus|notus)$
+      providerRegex: ^(notus|zephyrus|eurus)$
       bypassDnsResolution: true
 commonAnnotations:
   meta.helm.sh/release-name: kubelet-csr-approver

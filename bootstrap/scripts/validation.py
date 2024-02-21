@@ -64,25 +64,11 @@ def validate_timezone(timezone: str, **_) -> None:
 
 @required("cluster", "feature_gates")
 def validate_cluster_networks(cluster: dict, feature_gates: dict, **_) -> None:
-    dual_stack_ipv4_first = feature_gates.get("dual_stack_ipv4_first", False)
     pod_network = cluster.get("pod_network")
     service_network = cluster.get("service_network")
 
     if pod_network == service_network:
         raise ValueError(f"Pod network {pod_network} is the same as service network {service_network}")
-
-    if dual_stack_ipv4_first:
-        if len(pod_network.split(",")) != 2:
-            raise ValueError(f"Invalid pod network {pod_network}")
-        if len(service_network.split(",")) != 2:
-            raise ValueError(f"Invalid service network {service_network}")
-        cluster_ipv4, cluster_ipv6 = pod_network.split(",")
-        _validate_network(cluster_ipv4, 4)
-        _validate_network(cluster_ipv6, 6)
-        service_ipv4, service_ipv6 = service_network.split(",")
-        _validate_network(service_ipv4, 4)
-        _validate_network(service_ipv6, 6)
-        return
 
     if len(pod_network.split(",")) != 1:
         raise ValueError(f"Invalid pod network {pod_network}")

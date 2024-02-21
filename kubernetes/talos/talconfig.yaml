@@ -6,7 +6,7 @@ talosVersion: v1.6.4
 kubernetesVersion: v1.29.2
 
 clusterName: &cluster winds
-endpoint: https://zephyrus.othrys.chaos:6443
+endpoint: https://eurus.othrys.chaos:6443
 clusterPodNets:
   - "20.69.0.0/16"
 clusterSvcNets:
@@ -15,9 +15,23 @@ cniConfig:
   name: none
 
 nodes:
+  - hostname: "notus.${physical_domain}"
+    ipAddress: "10.20.0.11"
+    installDisk: "/dev/mmcblk0"
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "d8:3a:dd:90:fb:b7"
+        dhcp: false
+        addresses:
+          - "10.20.0.11/24"
+        mtu: 1500
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "10.20.0.1"
   - hostname: "zephyrus.${physical_domain}"
     talosImageURL: "ghcr.io/nberlee/installer:v1.6.4-rk3588"
-    ipAddress: "10.20.0.11"
+    ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
     controlPlane: true
     networkInterfaces:
@@ -25,7 +39,7 @@ nodes:
           hardwareAddr: "f2:0b:f9:64:33:23"
         dhcp: false
         addresses:
-          - "10.20.0.11/24"
+          - "10.20.0.12/24"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0
@@ -36,20 +50,27 @@ nodes:
           kernel:
             modules:
               - name: rockchip-cpufreq
-  - hostname: "notus.${physical_domain}"
-    ipAddress: "10.20.0.12"
+  - hostname: "eurus.${physical_domain}"
+    talosImageURL: "ghcr.io/nberlee/installer:v1.6.4-rk3588"
+    ipAddress: "10.20.0.13"
     installDisk: "/dev/mmcblk0"
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "d8:3a:dd:90:fb:b7"
+          hardwareAddr: "26:a4:58:e4:1b:bd"
         dhcp: false
         addresses:
-          - "10.20.0.12/24"
+          - "10.20.0.13/24"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0
             gateway: "10.20.0.1"
+    patches:
+      - |-
+        machine:
+          kernel:
+            modules:
+              - name: rockchip-cpufreq
 
 patches:
   - |-

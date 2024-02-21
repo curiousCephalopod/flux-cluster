@@ -2,16 +2,16 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: kubelet-csr-approver
+  name: onepassword-connect
 spec:
   interval: 30m
   chart:
     spec:
-      chart: kubelet-csr-approver
-      version: 1.0.7
+      chart: connect
+      version: 2.6.0
       sourceRef:
         kind: HelmRepository
-        name: postfinance
+        name: 1password
         namespace: flux-system
   install:
     remediation:
@@ -23,9 +23,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    providerRegex: ^(notus|zephyrus|eurus)$
-    bypassDnsResolution: true
-    metrics:
-      enable: true
-      serviceMonitor:
-        enabled: true
+    credentialsName: op-credentials
+    operator:
+      create: true
+      token:
+        name: op-credentials

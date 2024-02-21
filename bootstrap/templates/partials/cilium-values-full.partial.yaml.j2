@@ -1,8 +1,6 @@
 autoDirectNodeRoutes: true
-{% if bgp.enabled %}
 bgpControlPlane:
   enabled: true
-{% endif %}
 bpf:
   masquerade: false
 bgp:
@@ -12,7 +10,7 @@ cgroup:
     enabled: false
   hostRoot: /sys/fs/cgroup
 cluster:
-  name: winds
+  name: {{ cluster.name }}
   id: 1
 containerRuntime:
   integration: containerd
@@ -58,23 +56,13 @@ hubble:
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"
-{% if feature_gates.dual_stack_ipv4_first %}
-ipv6NativeRoutingCIDR: "${CLUSTER_CIDR_V6}"
-ipv6:
-  enabled: true
-{% endif %}
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  {% if ( (bgp.enabled) or
-          (feature_gates.dual_stack_ipv4_first) ) %}
   # https://github.com/cilium/cilium/issues/28985
   enabled: false
-  {% else %}
-  enabled: true
-  {% endif %}
 loadBalancer:
   algorithm: maglev
   mode: dsr
