@@ -39,7 +39,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
         host:
-          name: &host "rook.${SECRET_DOMAIN}"
+          name: &host "rook.${CLUSTER_DOMAIN}"
           path: /
         tls:
           - hosts:
@@ -88,11 +88,18 @@ spec:
         urlPrefix: /
         ssl: false
       storage:
-        useAllNodes: true
-        useAllDevices: true
-        deviceFilter: nvme0n1
-        config:
-          osdsPerDevice: "1"
+        useAllNodes: false
+        useAllDevices: false
+        nodes:
+        {% for node in cluster.nodes.inventory %}
+        {% if node.storage is defined %}
+          - name: "{{ node.name }}.${PHYSICAL_DOMAIN}"
+            devices:
+              - name: "{{ node.storage }}"
+                config:
+                  osdsPerDevice: "1"
+        {% endif %}
+        {% endfor %}
       placement:
         mgr: &placement
           nodeAffinity:
@@ -107,7 +114,7 @@ spec:
         spec:
           failureDomain: host
           replicated:
-            size: 3
+            size: 2
         storageClass:
           enabled: true
           name: ceph-block
@@ -135,11 +142,11 @@ spec:
         spec:
           metadataPool:
             replicated:
-              size: 3
+              size: 2
           dataPools:
             - failureDomain: host
               replicated:
-                size: 3
+                size: 2
               name: data0
           metadataServer:
             activeCount: 1
@@ -178,7 +185,7 @@ spec:
           metadataPool:
             failureDomain: host
             replicated:
-              size: 3
+              size: 2
           dataPool:
             failureDomain: host
             erasureCoded:
@@ -211,7 +218,7 @@ spec:
           annotations:
             cert-manager.io/cluster-issuer: ca-issuer
           host:
-            name: &host "s3.${SECRET_DOMAIN}"
+            name: &host "s3.${CLUSTER_DOMAIN}"
             path: /
           tls:
             - hosts:

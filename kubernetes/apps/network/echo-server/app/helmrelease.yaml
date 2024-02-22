@@ -82,7 +82,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${CLUSTER_DOMAIN}"
             paths:
               - path: /
                 service:

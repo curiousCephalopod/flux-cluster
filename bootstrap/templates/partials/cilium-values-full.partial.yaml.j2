@@ -48,10 +48,10 @@ hubble:
       annotations:
         cert-manager.io/cluster-issuer: ca-issuer
       hosts:
-        - "hubble.${SECRET_DOMAIN}"
+        - "hubble.${CLUSTER_DOMAIN}"
       tls:
         - hosts:
-            - "hubble.${SECRET_DOMAIN}"
+            - "hubble.${CLUSTER_DOMAIN}"
           secretName: hubble-tls-certificate
 ipam:
   mode: kubernetes
