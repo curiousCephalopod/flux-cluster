@@ -89,18 +89,11 @@ spec:
         ssl: false
       storage:
         useAllNodes: false
-        useAllDevices: false
+        useAllDevices: true
+        deviceFilter: nvme0n1
         nodes:
           - name: "zephyrus.${PHYSICAL_DOMAIN}"
-            devices:
-              - name: "nvme0n1"
-                config:
-                  osdsPerDevice: "1"
           - name: "eurus.${PHYSICAL_DOMAIN}"
-            devices:
-              - name: "nvme0n1"
-                config:
-                  osdsPerDevice: "1"
       placement:
         mgr: &placement
           nodeAffinity:

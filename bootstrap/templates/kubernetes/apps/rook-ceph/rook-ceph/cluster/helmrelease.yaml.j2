@@ -89,15 +89,12 @@ spec:
         ssl: false
       storage:
         useAllNodes: false
-        useAllDevices: false
+        useAllDevices: true
+        deviceFilter: nvme0n1
         nodes:
         {% for node in cluster.nodes.inventory %}
         {% if node.storage is defined %}
           - name: "{{ node.name }}.${PHYSICAL_DOMAIN}"
-            devices:
-              - name: "{{ node.storage }}"
-                config:
-                  osdsPerDevice: "1"
         {% endif %}
         {% endfor %}
       placement:
