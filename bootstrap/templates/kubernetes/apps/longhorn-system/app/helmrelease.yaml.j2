@@ -25,3 +25,11 @@ spec:
   values:
     defaultSettings:
       createDefaultDiskLabeledNodes: true
+    ingress:
+      enabled: true
+      ingressClassName: cilium
+      host: "longhorn.${CLUSTER_DOMAIN}"
+      tls: true
+      tlsSecret: longhorn-tls-certificate
+      annotations:
+        cert-manager.io/cluster-issuer: ca-issuer

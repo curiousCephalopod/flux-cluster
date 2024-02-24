@@ -18,6 +18,12 @@ nodes:
   - hostname: "notus.${physical_domain}"
     ipAddress: "10.20.0.11"
     installDisk: "/dev/mmcblk0"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -29,6 +35,18 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: "10.20.0.1"
+    patches:
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/lib/longhorn
+                type: bind
+                source: /var/lib/longhorn
+                options:
+                  - bind
+                  - rshared
+                  - rw
   - hostname: "zephyrus.${physical_domain}"
     talosImageURL: "registry.cronus.chaos/installer:v1.6.5-rk3588-iscsi"
     ipAddress: "10.20.0.12"

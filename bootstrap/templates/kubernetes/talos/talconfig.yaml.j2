@@ -37,6 +37,15 @@ nodes:
     {% if item.labels is defined %}
     nodeLabels: {{ item.labels }}
     {% endif %}
+    {% if item.schematic_extensions is defined %}
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+          {% for ext in item.schematic_extensions %}
+            - {{ ext }}
+          {% endfor %}
+    {% endif %}
     controlPlane: {{ (item.controller) | string | lower }}
     networkInterfaces:
       - deviceSelector:
