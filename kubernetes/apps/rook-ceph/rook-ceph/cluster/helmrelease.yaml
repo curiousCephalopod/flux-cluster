@@ -103,6 +103,8 @@ spec:
                     - key: node-role.kubernetes.io/control-plane
                       operator: Exists
         mon: *placement
+      mon:
+        allowMultiplePerNode: true
     cephBlockPools:
       - name: ceph-blockpool
         spec:
