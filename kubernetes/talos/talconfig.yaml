@@ -30,9 +30,10 @@ nodes:
           - network: 0.0.0.0/0
             gateway: "10.20.0.1"
   - hostname: "zephyrus.${physical_domain}"
-    talosImageURL: "ghcr.io/nberlee/installer:v1.6.5-rk3588"
+    talosImageURL: "registry.cronus.chaos/installer:v1.6.5-rk3588-iscsi"
     ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
+    nodeLabels: {'node.longhorn.io/create-default-disk': 'true'}
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -50,10 +51,22 @@ nodes:
           kernel:
             modules:
               - name: rockchip-cpufreq
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/lib/longhorn
+                type: bind
+                source: /var/lib/longhorn
+                options:
+                  - bind
+                  - rshared
+                  - rw
   - hostname: "eurus.${physical_domain}"
-    talosImageURL: "ghcr.io/nberlee/installer:v1.6.5-rk3588"
+    talosImageURL: "registry.cronus.chaos/installer:v1.6.5-rk3588-iscsi"
     ipAddress: "10.20.0.13"
     installDisk: "/dev/mmcblk0"
+    nodeLabels: {'node.longhorn.io/create-default-disk': 'true'}
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -71,6 +84,17 @@ nodes:
           kernel:
             modules:
               - name: rockchip-cpufreq
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/lib/longhorn
+                type: bind
+                source: /var/lib/longhorn
+                options:
+                  - bind
+                  - rshared
+                  - rw
 
 patches:
   - |-

@@ -34,6 +34,9 @@ nodes:
     installDiskSelector:
       serial: "{{ item.talos_disk_device }}"
     {% endif %}
+    {% if item.labels is defined %}
+    nodeLabels: {{ item.labels }}
+    {% endif %}
     controlPlane: {{ (item.controller) | string | lower }}
     networkInterfaces:
       - deviceSelector:
