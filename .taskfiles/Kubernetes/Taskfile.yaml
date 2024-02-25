@@ -28,6 +28,18 @@ tasks:
     desc: Get events sorted by modified time
     cmd: kubectl get events -A --sort-by='.metadata.creationTimestamp'
 
+  ns-resources:
+    desc: Get all resources in a namespace
+    cmd: kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found -n {{.ns}}
+    requires:
+      vars: ["ns"]
+
+  longhorn-annotation:
+    desc: Add Longhorn Default Disk annotation
+    cmd: "kubectl annotate node {{.node}} --overwrite node.longhorn.io/default-disks-config=[{'path': '/var/lib/longhorn', 'allowScheduling': false}, {'path':'/var/mnt/nvme/longhorn', 'allowScheduling': true}]"
+    requires:
+      vars: ["node"]
+
   kubeconform:
     desc: Validate Kubernetes manifests with kubeconform
     cmd: |

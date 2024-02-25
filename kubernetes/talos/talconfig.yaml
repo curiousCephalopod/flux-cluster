@@ -51,7 +51,7 @@ nodes:
     talosImageURL: "registry.cronus.chaos/installer:v1.6.5-rk3588-iscsi"
     ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
-    nodeLabels: {'node.longhorn.io/create-default-disk': 'true'}
+    nodeLabels: {'node.longhorn.io/create-default-disk': 'config'}
     machineDisks: [{'device': '/dev/nvme0n1', 'partitions': [{'mountpoint': '/var/mnt/nvme'}]}]
     controlPlane: true
     networkInterfaces:
@@ -76,6 +76,13 @@ nodes:
             extraMounts:
               - destination: /var/lib/longhorn
                 type: bind
+                source: /var/lib/longhorn
+                options:
+                  - bind
+                  - rshared
+                  - rw
+              - destination: /var/mnt/nvme/longhorn
+                type: bind
                 source: /var/mnt/nvme/longhorn
                 options:
                   - bind
@@ -85,7 +92,7 @@ nodes:
     talosImageURL: "registry.cronus.chaos/installer:v1.6.5-rk3588-iscsi"
     ipAddress: "10.20.0.13"
     installDisk: "/dev/mmcblk0"
-    nodeLabels: {'node.longhorn.io/create-default-disk': 'true'}
+    nodeLabels: {'node.longhorn.io/create-default-disk': 'config'}
     machineDisks: [{'device': '/dev/nvme0n1', 'partitions': [{'mountpoint': '/var/mnt/nvme'}]}]
     controlPlane: true
     networkInterfaces:
@@ -109,6 +116,13 @@ nodes:
           kubelet:
             extraMounts:
               - destination: /var/lib/longhorn
+                type: bind
+                source: /var/lib/longhorn
+                options:
+                  - bind
+                  - rshared
+                  - rw
+              - destination: /var/mnt/nvme/longhorn
                 type: bind
                 source: /var/mnt/nvme/longhorn
                 options:
