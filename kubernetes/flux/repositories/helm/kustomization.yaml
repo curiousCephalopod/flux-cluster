@@ -15,3 +15,5 @@ resources:
   - ./piraeus.yaml
   - ./longhorn.yaml
   - ./1password.yaml
+  - ./cloudnative-pg.yaml
+  - ./bitnami.yaml
