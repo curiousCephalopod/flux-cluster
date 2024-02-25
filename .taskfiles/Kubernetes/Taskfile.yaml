@@ -34,11 +34,11 @@ tasks:
     requires:
       vars: ["ns"]
 
-  longhorn-annotation:
-    desc: Add Longhorn Default Disk annotation
-    cmd: "kubectl annotate node {{.node}} --overwrite node.longhorn.io/default-disks-config=[{'path': '/var/lib/longhorn', 'allowScheduling': false}, {'path':'/var/mnt/nvme/longhorn', 'allowScheduling': true}]"
-    requires:
-      vars: ["node"]
+  # longhorn-annotation:
+  #   desc: Add Longhorn Default Disk annotation
+  #   cmd: kubectl annotate node {{.node}} --overwrite node.longhorn.io/default-disks-config="[{'path': '/var/lib/longhorn', 'allowScheduling': false}, {'path':'/var/mnt/nvme/longhorn', 'allowScheduling': true}]"
+  #   requires:
+  #     vars: ["node"]
 
   kubeconform:
     desc: Validate Kubernetes manifests with kubeconform

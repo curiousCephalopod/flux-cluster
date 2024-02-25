@@ -29,11 +29,4 @@ spec:
       serviceMonitor:
         enabled: true
     ingress:
-      enabled: true
-      ingressClassName: cilium
-      host: "longhorn.${CLUSTER_DOMAIN}"
-      tls: true
-      secureBackends: true
-      tlsSecret: longhorn-tls-certificate
-      annotations:
-        cert-manager.io/cluster-issuer: ca-issuer
+      enabled: false
