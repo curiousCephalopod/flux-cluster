@@ -17,7 +17,7 @@ spec:
                 port:
                   name: http
             path: /
-            PathType: Prefix
+            pathType: Prefix
   tls:
     - hosts:
       - longhorn.${CLUSTER_DOMAIN}
