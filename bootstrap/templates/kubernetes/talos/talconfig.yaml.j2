@@ -37,6 +37,9 @@ nodes:
     {% if item.labels is defined %}
     nodeLabels: {{ item.labels }}
     {% endif %}
+    {% if item.extra_disks is defined %}
+    machineDisks: {{ item.extra_disks }}
+    {% endif %}
     {% if item.schematic_extensions is defined %}
     schematic:
       customization:
