@@ -27,11 +27,12 @@ spec:
     database:
       external: true
       type: "postgresql"
-    initial:
-      user: admin
-      email: admin@chaos
-      serverUrl: https://onedev.${CLUSTER_DOMAIN}
-      sshRootUrl: https://git.${CLUSTER_DOMAIN}
+    onedev:
+      initSettings:
+        user: admin
+        email: admin@chaos
+        serverUrl: https://onedev.${CLUSTER_DOMAIN}
+        sshRootUrl: https://git.${CLUSTER_DOMAIN}
     service:
       separateSSH:
         enabled: true
