@@ -9,3 +9,8 @@ resources:
   - ./onedevpostgres.yaml
   - ./helmrelease.yaml
   - ./ingress.yaml
+patches:
+  - path: ./statefulsetpatch.yaml
+    target:
+      kind: StatefulSet
+      name: onedev
