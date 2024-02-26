@@ -36,9 +36,11 @@ spec:
     service:
       separateSSH:
         enabled: true
+        type: "LoadBalancer"
         port: 22
         annotations:
           expose-bgp: "true"
+          coredns.io/hostname: git.${CLUSTER_DOMAIN}
     ingress:
       enabled: false
     persistence:
