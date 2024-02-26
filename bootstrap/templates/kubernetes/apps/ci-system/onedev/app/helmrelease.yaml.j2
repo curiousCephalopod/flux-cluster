@@ -32,7 +32,7 @@ spec:
         user: admin
         email: admin@chaos
         serverUrl: https://onedev.${CLUSTER_DOMAIN}
-        sshRootUrl: https://git.${CLUSTER_DOMAIN}
+        sshRootUrl: ssh://git.${CLUSTER_DOMAIN}
     service:
       separateSSH:
         enabled: true
@@ -59,8 +59,6 @@ spec:
           secretKeyRef:
             key: password
             name: onedev-pg-app
-      - name: initial_username
-        value: admin
       - name: initial_password
         valueFrom:
           secretKeyRef:
