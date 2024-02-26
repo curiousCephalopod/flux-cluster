@@ -30,8 +30,8 @@ spec:
     initial:
       user: admin
       email: admin@chaos
-      serverUrl: https://onedev.{{ CLUSTER_DOMAIN }}
-      sshRootUrl: https://git.{{ CLUSTER_DOMAIN }}
+      serverUrl: https://onedev.${CLUSTER_DOMAIN}
+      sshRootUrl: https://git.${CLUSTER_DOMAIN}
     service:
       separateSSH:
         enabled: true
@@ -48,7 +48,7 @@ spec:
         nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
         nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
         nginx.ingress.kubernetes.io/proxy-body-size: "0"
-      host: onedev.${ CLUSTER_DOMAIN }
+      host: onedev.${CLUSTER_DOMAIN}
       tls:
         enabled: true
         secretName: onedev-tls-certificate
