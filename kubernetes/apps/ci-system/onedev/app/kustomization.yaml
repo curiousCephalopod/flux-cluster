@@ -2,6 +2,10 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+patches:
+  - path: statefulsetpatch.yaml
+    target:
+      kind: StatefulSet
 resources:
   - ./cacerts.sops.yaml
   - ./initialadmin.yaml
@@ -9,5 +13,3 @@ resources:
   - ./onedevpostgres.yaml
   - ./helmrelease.yaml
   - ./ingress.yaml
-patches:
-  - ./statefulsetpatch.yaml
