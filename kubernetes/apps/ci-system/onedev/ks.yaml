@@ -32,7 +32,7 @@ spec:
           template:
             spec:
               containers:
-                - name: onedev
+                - name: onedevserver
                   volumeMounts:
                     - name: cacerts
                       mountPath: /etc/ssl/certs/java/cacerts
