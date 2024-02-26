@@ -5,6 +5,7 @@ metadata:
   name: postgres-lb
   labels:
     expose-bgp: "true"
+  annotations:
     coredns.io/hostname: postgres.${CLUSTER_DOMAIN}
 spec:
   type: LoadBalancer
