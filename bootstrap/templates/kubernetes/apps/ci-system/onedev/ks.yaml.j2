@@ -18,3 +18,26 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  patches:
+    - target:
+        kind: StatefulSet
+        name: onedev
+        namespace: ci-system
+      patch: |-
+        apiVersion: apps/v1
+        kind: StatefulSet
+        metadata:
+          name: onedev
+        spec:
+          template:
+            spec:
+              containers:
+                - name: onedev
+                  volumeMounts:
+                    - name: cacerts
+                      mountPath: /etc/ssl/certs/java/cacerts
+                      subPath: cacerts
+              volumes:
+                - name: cacerts
+                  secret:
+                    secretName: cacerts
