@@ -17,3 +17,4 @@ resources:
   - ./1password.yaml
   - ./cloudnative-pg.yaml
   - ./bitnami.yaml
+  - ./onedev.yaml

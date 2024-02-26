@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: onedev
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: onedev
+      version: 0.20.1
+      sourceRef:
+        kind: HelmRepository
+        name: onedev
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    database:
+      external: true
+      type: "postgresql"
+    initial:
+      user: admin
+      email: admin@chaos
+      serverUrl: https://onedev.
+      sshRootUrl: https://git.
+    service:
+      separateSSH:
+        enabled: true
+        port: 22
+        annotations:
+          expose-bgp: "true"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: ca-issuer
+        nginx.ingress.kubernetes.io/affinity: "cookie"
+        nginx.ingress.kubernetes.io/affinity-mode: "persistent"
+        nginx.ingress.kubernetes.io/session-cookie-name: "session-sticky"
+        nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+        nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+        nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      host: onedev.${ CLUSTER_DOMAIN }
+      tls:
+        enabled: true
+        secretName: onedev-tls-certificate
+    persistence:
+      size: 20Gi
+    env:
+      - name: hibernate_connection_url
+        valueFrom:
+          secretKeyRef:
+            key: jdbc-uri
+            name: onedev-pg-app
+      - name: initial_username
+        value: admin
+      - name: initial_password
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: onedev-admin-secret
