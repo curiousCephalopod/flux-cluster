@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: certauthorities
+stringData:
+  {% for name, cert in certauthorities.items() %}
+  {{ name }}: |
+{%- filter indent(width=4) %}
+
+{{ cert }}
+{% endfilter %}
+  {% endfor %}

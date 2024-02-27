@@ -3,14 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./cacerts.sops.yaml
   - ./initialadmin.yaml
   - ./pgsuperuser.yaml
   - ./onedevpostgres.yaml
   - ./helmrelease.yaml
   - ./ingress.yaml
-patches:
-  - path: ./statefulsetpatch.yaml
-    target:
-      kind: StatefulSet
-      name: onedev

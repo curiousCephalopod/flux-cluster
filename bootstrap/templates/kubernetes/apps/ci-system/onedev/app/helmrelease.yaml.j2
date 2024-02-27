@@ -28,6 +28,8 @@ spec:
       external: true
       type: "postgresql"
     onedev:
+      trustCerts:
+        secretName: "certauthorities"
       initSettings:
         user: admin
         email: admin@chaos
