@@ -24,6 +24,16 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    extraVolumes:
+      - mountPath: /etc/ssl/certs/java/cacerts
+        name: cacerts
+        subPath: cacerts
+    extraVolumeMounts:
+      - name: cacerts
+        secret:
+          defaultMode: 420
+          optional: false
+          secretName: cacerts
     database:
       external: true
       type: "postgresql"
