@@ -25,9 +25,8 @@ spec:
     keepHistory: false
   values:
     extraVolumes:
-      - mountPath: /etc/ssl/certs/java/cacerts
+      - mountPath: /etc/ssl/certs/java
         name: cacerts
-        subPath: cacerts
     extraVolumeMounts:
       - name: cacerts
         secret:
