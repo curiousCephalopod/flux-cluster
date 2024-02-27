@@ -25,14 +25,15 @@ spec:
     keepHistory: false
   values:
     extraVolumes:
-      - mountPath: /etc/ssl/certs/java
-        name: cacerts
-    extraVolumeMounts:
       - name: cacerts
         secret:
           defaultMode: 420
           optional: false
           secretName: cacerts
+    extraVolumeMounts:
+      - mountPath: /etc/ssl/certs/java/cacerts
+        name: cacerts
+        subPath: cacerts
     database:
       external: true
       type: "postgresql"
