@@ -30,6 +30,7 @@ spec:
             apiVersion: apps/v1
             metadata:
               name: onedev
+              namespace: ci-system
             spec:
               template:
                 spec:
