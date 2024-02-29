@@ -26,6 +26,13 @@ spec:
   postRenderers:
     - kustomize:
         patchesStrategicMerge:
+          - kind: Service
+            apiVersion: v1
+            metadata:
+              name: onedev-ssh
+              namespace: ci-system
+              labels:
+                expose-bgp: "true"
           - kind: StatefulSet
             apiVersion: apps/v1
             metadata:
@@ -62,7 +69,6 @@ spec:
         type: "LoadBalancer"
         port: 22
         annotations:
-          expose-bgp: "true"
           coredns.io/hostname: git.${CLUSTER_DOMAIN}
     ingress:
       enabled: false
