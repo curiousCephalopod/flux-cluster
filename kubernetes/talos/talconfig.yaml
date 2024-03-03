@@ -18,12 +18,6 @@ nodes:
   - hostname: "notus.${physical_domain}"
     ipAddress: "10.20.0.11"
     installDisk: "/dev/mmcblk0"
-    schematic:
-      customization:
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -48,11 +42,10 @@ nodes:
                   - rshared
                   - rw
   - hostname: "zephyrus.${physical_domain}"
-    talosImageURL: "registry.cronus.chaos/installer:v1.6.5-rk3588-iscsi"
+    talosImageURL: "ghcr.io/nberlee/installer:v1.6.5-rk3588"
     ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
-    nodeLabels: {'node.longhorn.io/create-default-disk': 'config'}
-    machineDisks: [{'device': '/dev/nvme0n1', 'partitions': [{'mountpoint': '/var/mnt/nvme'}]}]
+    nodeLabels: {'role': 'storage-node'}
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -70,30 +63,11 @@ nodes:
           kernel:
             modules:
               - name: rockchip-cpufreq
-      - |-
-        machine:
-          kubelet:
-            extraMounts:
-              - destination: /var/lib/longhorn
-                type: bind
-                source: /var/lib/longhorn
-                options:
-                  - bind
-                  - rshared
-                  - rw
-              - destination: /var/mnt/nvme/longhorn
-                type: bind
-                source: /var/mnt/nvme/longhorn
-                options:
-                  - bind
-                  - rshared
-                  - rw
   - hostname: "eurus.${physical_domain}"
-    talosImageURL: "registry.cronus.chaos/installer:v1.6.5-rk3588-iscsi"
+    talosImageURL: "ghcr.io/nberlee/installer:v1.6.5-rk3588"
     ipAddress: "10.20.0.13"
     installDisk: "/dev/mmcblk0"
-    nodeLabels: {'node.longhorn.io/create-default-disk': 'config'}
-    machineDisks: [{'device': '/dev/nvme0n1', 'partitions': [{'mountpoint': '/var/mnt/nvme'}]}]
+    nodeLabels: {'role': 'storage-node'}
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -111,24 +85,6 @@ nodes:
           kernel:
             modules:
               - name: rockchip-cpufreq
-      - |-
-        machine:
-          kubelet:
-            extraMounts:
-              - destination: /var/lib/longhorn
-                type: bind
-                source: /var/lib/longhorn
-                options:
-                  - bind
-                  - rshared
-                  - rw
-              - destination: /var/mnt/nvme/longhorn
-                type: bind
-                source: /var/mnt/nvme/longhorn
-                options:
-                  - bind
-                  - rshared
-                  - rw
 
 patches:
   - |-
