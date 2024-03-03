@@ -5,3 +5,4 @@ resources:
   - ./op-credentials.sops.yaml
   - ./onepassword-token.sops.yaml
   - ./helmrelease.yaml
+  - ./clustersecretstore.yaml
