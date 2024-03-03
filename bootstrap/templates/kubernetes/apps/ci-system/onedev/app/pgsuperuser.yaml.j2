@@ -5,7 +5,7 @@ metadata:
   name: pg-superuser-secret
 spec:
   secretStoreRef:
-    kind: SecretStore
+    kind: ClusterSecretStore
     name: onepassword-connect
   target:
     creationPolicy: Owner
