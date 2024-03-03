@@ -6,12 +6,13 @@ distribution: "talos"
 timezone: Etc/UTC
 
 cluster:
+  name: e2e
   endpoint: fake.com
   pod_network: 10.69.0.0/16
   service_network: 10.96.0.0/16
   tls_sans: ["fake"]
+  dns_vip: "20.20.20.0"
   nodes:
-    dns_vip: "20.20.20.0"
     host_network: 10.10.10.0/24
     dns_servers: ["1.1.1.1"]
     ntp: "10.10.10.0"
