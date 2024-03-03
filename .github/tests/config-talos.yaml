@@ -19,10 +19,12 @@ cluster:
     search_domain: "fake"
     inventory:
       - name: talos-controller-0
+        mac: "ab:cd:ef:12:34:56"
         address: 10.10.10.100
         controller: true
         talos_disk_device: fake
       - name: talos-worker-0
+        mac: "ab:cd:ef:12:34:57"
         address: 10.10.10.101
         controller: false
         talos_disk_device: fake
