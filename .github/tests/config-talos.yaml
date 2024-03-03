@@ -32,10 +32,18 @@ cluster_domain: cluster.com
 
 ca_chain: "fake-chain"
 
+onepassword:
+  token: "token"
+  credentials: "credentials"
+
+certauthorities:
+  chaos.pem: "cert"
+  change.pem: "cert"
+
 certmanager:
-  tls:
-    crt: "fake-cert"
-    key: "fake-key"
+  key: "fake-key"
+
+cacerts: "cacerts"
 
 flux:
   enabled: true
