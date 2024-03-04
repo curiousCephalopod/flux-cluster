@@ -5,16 +5,16 @@ talosVersion: v1.6.5
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.29.2
 
-clusterName: &cluster #{  cluster.name  }#
-endpoint: https://#{  cluster.endpoint  }#:6443
+clusterName: &cluster #{ cluster.name }#
+endpoint: https://#{ cluster.endpoint }#:6443
 clusterPodNets:
-  - "#{  cluster.pod_network.split(',')[0]  }#"
+  - "#{ cluster.pod_network.split(',')[0] }#"
 clusterSvcNets:
-  - "#{  cluster.service_network.split(',')[0]  }#"
+  - "#{ cluster.service_network.split(',')[0] }#"
 #% if cluster.tls_sans | length > 0 %#
 additionalApiServerCertSans: &sans
   #% for item in cluster.tls_sans %#
-  - "#{  item  }#"
+  - "#{ item }#"
   #% endfor %#
 additionalMachineCertSans: *sans
 #% endif %#
@@ -23,22 +23,22 @@ cniConfig:
 
 nodes:
   #% for item in cluster.nodes.inventory %#
-  - hostname: "#{  item.name  }#.${physical_domain}"
+  - hostname: "#{ item.name }#.${physical_domain}"
     #% if item.installer is defined %#
-    talosImageURL: "#{  item.installer  }#"
+    talosImageURL: "#{ item.installer }#"
     #% endif %#
-    ipAddress: "#{  item.address  }#"
+    ipAddress: "#{ item.address }#"
     #% if item.talos_disk_device.startswith('/') %#
-    installDisk: "#{  item.talos_disk_device  }#"
+    installDisk: "#{ item.talos_disk_device }#"
     #% else %#
     installDiskSelector:
-      serial: "#{  item.talos_disk_device  }#"
+      serial: "#{ item.talos_disk_device }#"
     #% endif %#
     #% if item.labels is defined %#
-    nodeLabels: #{  item.labels  }#
+    nodeLabels: #{ item.labels }#
     #% endif %#
     #% if item.extra_disks is defined %#
-    machineDisks: #{  item.extra_disks  }#
+    machineDisks: #{ item.extra_disks }#
     #% endif %#
     #% if item.schematic_extensions is defined %#
     schematic:
@@ -46,30 +46,30 @@ nodes:
         systemExtensions:
           officialExtensions:
           #% for ext in item.schematic_extensions %#
-            - #{  ext  }#
+            - #{ ext }#
           #% endfor %#
     #% endif %#
-    controlPlane: #{  (item.controller) | string | lower  }#
+    controlPlane: #{ (item.controller) | string | lower }#
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "#{  item.mac  }#"
+          hardwareAddr: "#{ item.mac }#"
         dhcp: false
         #% if cluster.vlan %#
         vlans:
-          - vlanId: #{  cluster.vlan  }#
+          - vlanId: #{ cluster.vlan }#
             addresses:
-              - "#{  item.address }}/#{ cluster.nodes.host_network.split('/') | last  }#"
+              - "#{ item.address }#/#{ cluster.nodes.host_network.split('/') | last }#"
             mtu: 1500
             routes:
               - network: 0.0.0.0/0
-                gateway: "#{  cluster.nodes.host_network | nthhost(1)  }#"
+                gateway: "#{ cluster.nodes.host_network | nthhost(1) }#"
         #% else %#
         addresses:
-          - "#{  item.address }}/#{ cluster.nodes.host_network.split('/') | last  }#"
+          - "#{ item.address }#/#{ cluster.nodes.host_network.split('/') | last }#"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0
-            gateway: "#{  cluster.nodes.host_network | nthhost(1)  }#"
+            gateway: "#{ cluster.nodes.host_network | nthhost(1) }#"
         #% endif %#
     #% if item.talos_patches is defined and item.talos_patches | length > 0 %#
     patches:
@@ -77,7 +77,7 @@ nodes:
       - |-
 #%- filter indent(width=8) %#
 
-#{  patch  }#
+#{ patch }#
 #% endfilter %#
     #% endfor %#
     #% endif %#
@@ -112,7 +112,7 @@ controlPlane:
 #% if cluster.schematics.enabled %#
   schematic:
     customization:
-#{  cluster.schematics.customization | indent(6, first=True)  }#
+#{ cluster.schematics.customization | indent(6, first=True) }#
 #% endif %#
   patches:
     # Configure containerd
@@ -156,7 +156,7 @@ controlPlane:
             rotate-server-certificates: true
           nodeIP:
             validSubnets:
-              - "#{  cluster.nodes.host_network  }#"
+              - "#{ cluster.nodes.host_network }#"
 
     # Enable KubePrism
     - &kubePrismPatch |-
@@ -172,7 +172,7 @@ controlPlane:
         network:
           nameservers:
             #% for item in cluster.nodes.dns_servers | default(['1.1.1.1', '1.0.0.1']) %#
-            - #{  item  }#
+            - #{ item }#
             #% endfor %#
 
     # Configure NTP
@@ -181,7 +181,7 @@ controlPlane:
         time:
           disabled: false
           servers:
-            - #{  cluster.nodes.ntp  }#
+            - #{ cluster.nodes.ntp }#
 
     # Custom sysctl settings
     - &sysctlPatch |-
@@ -211,7 +211,7 @@ controlPlane:
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
           advertisedSubnets:
-            - "#{  cluster.nodes.host_network  }#"
+            - "#{ cluster.nodes.host_network }#"
 
     # Disable default API server admission plugins.
     - |-
@@ -234,7 +234,7 @@ worker:
 #% if cluster.schematics.enabled %#
   schematic:
     customization:
-#{  cluster.schematics.customization | indent(6, first=True)  }#
+#{ cluster.schematics.customization | indent(6, first=True) }#
 #% endif %#
   patches:
     - *containerdPatch

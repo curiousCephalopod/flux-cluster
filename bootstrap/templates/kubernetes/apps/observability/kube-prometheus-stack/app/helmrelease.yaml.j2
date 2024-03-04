@@ -82,7 +82,7 @@ spec:
       enabled: true
       endpoints: &cp
 #% for node in cluster.nodes.inventory %#
-        - #{  address  }#
+        - #{ address }#
 #% endfor %#
     kubeEtcd:
       enabled: true

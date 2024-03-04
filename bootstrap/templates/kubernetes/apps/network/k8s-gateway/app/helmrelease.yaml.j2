@@ -30,7 +30,7 @@ spec:
       type: LoadBalancer
       port: 53
       annotations:
-        io.cilium/lb-ipam-ips: "#{  cluster.dns_vip  }#"
+        io.cilium/lb-ipam-ips: "#{ cluster.dns_vip }#"
       labels:
         expose-bgp: "true"
       externalTrafficPolicy: Cluster

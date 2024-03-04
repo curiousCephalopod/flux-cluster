@@ -9,16 +9,16 @@ spec:
     matchLabels:
       kubernetes.io/os: linux
   virtualRouters:
-    - localASN: #{  bgp.local_asn  }#
+    - localASN: #{ bgp.local_asn }#
       neighbors:
         #% if bgp.peers %#
         #% for item in bgp.peers %#
-        - peerAddress: "#{  item  }#/24"
-          peerASN: #{  bgp.peer_asn  }#
+        - peerAddress: "#{ item }#/24"
+          peerASN: #{ bgp.peer_asn }#
         #% endfor %#
         #% else %#
-        - peerAddress: "#{  cluster.nodes.host_network | nthhost(1)  }#/24"
-          peerASN: #{  bgp.peer_asn  }#
+        - peerAddress: "#{ cluster.nodes.host_network | nthhost(1) }#/24"
+          peerASN: #{ bgp.peer_asn }#
         #% endif %#
           eBGPMultihopTTL: 10
           connectRetryTimeSeconds: 120

@@ -2,17 +2,17 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: #{  cluster.name  }#
+  name: #{ cluster.name }#
   namespace: flux-system
 spec:
   interval: 30m
-  url: "#{  flux.github.address  }#"
+  url: "#{ flux.github.address }#"
   #% if flux.github.private.enabled %#
   secretRef:
     name: github-deploy-key
   #% endif %#
   ref:
-    branch: "#{  flux.github.branch|default('main', true)  }#"
+    branch: "#{ flux.github.branch|default('main', true) }#"
   ignore: |
     # exclude all
     /*
@@ -31,7 +31,7 @@ spec:
   wait: false
   sourceRef:
     kind: GitRepository
-    name: #{  cluster.name  }#
+    name: #{ cluster.name }#
   decryption:
     provider: sops
     secretRef:
