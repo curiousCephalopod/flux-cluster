@@ -14,7 +14,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: {{ cluster.name }} 
+    name: #{  cluster.name  }# 
   wait: false
   interval: 30m
   retryInterval: 1m

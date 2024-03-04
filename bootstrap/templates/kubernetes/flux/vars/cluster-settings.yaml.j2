@@ -5,7 +5,7 @@ metadata:
   name: cluster-settings
   namespace: flux-system
 data:
-  TIMEZONE: "{{ timezone }}"
-  CLUSTER_CIDR: "{{ cluster.pod_network.split(',')[0] }}"
-  NODE_CIDR: "{{ cluster.nodes.host_network }}"
-  LOADBALANCER_CIDR: "{{ bgp.loadbalancer_network }}"
+  TIMEZONE: "#{  timezone  }#"
+  CLUSTER_CIDR: "#{  cluster.pod_network.split(',')[0]  }#"
+  NODE_CIDR: "#{  cluster.nodes.host_network  }#"
+  LOADBALANCER_CIDR: "#{  bgp.loadbalancer_network  }#"
