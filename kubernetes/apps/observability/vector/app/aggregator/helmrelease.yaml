@@ -43,6 +43,9 @@ spec:
       annotations:
         coredns.io/hostname: vector.${CLUSTER_DOMAIN}
       ports:
-        - 8686
-        - 6000
-        - 6010
+        - name: api
+          port: 8686
+        - name: journald
+          port: 6000
+        - name: kubernetes
+          port: 6010
