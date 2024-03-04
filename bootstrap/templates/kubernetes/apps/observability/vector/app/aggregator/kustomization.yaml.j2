@@ -10,8 +10,3 @@ configMapGenerator:
       - vector.yaml=./resources/vector.yaml
 generatorOptions:
   disableNameSuffixHash: true
-patches:
-  - path: servicepatch.yaml
-    target:
-      kind: Service
-      name: vector-aggregator

@@ -21,3 +21,14 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 15m
+  patches:
+    - patch: |
+        kind: Service
+        apiVersion: v1
+        metadata:
+          labels:
+            expose-bgp: "true"
+      target:
+        kind: Service
+        version: v1
+        name: vector-aggregator
