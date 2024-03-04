@@ -24,7 +24,7 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  postRenderers:
+  #| postRenderers:
     - kustomize:
         patchesStrategicMerge:
           - kind: Service
@@ -33,7 +33,7 @@ spec:
               name: vector-aggregator
               namespace: observability
               labels:
-                expose-bgp: "true"
+                expose-bgp: "true" |#
   values:
     role: Aggregator
     podAnnotations:
