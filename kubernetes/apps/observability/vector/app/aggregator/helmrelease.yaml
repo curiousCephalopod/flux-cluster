@@ -24,6 +24,16 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Service
+            apiVersion: v1
+            metadata:
+              name: vector-aggregator
+              namespace: observability
+              labels:
+                expose-bgp: "true"
   values:
     role: Aggregator
     podAnnotations:
@@ -37,7 +47,7 @@ spec:
         whenUnsatisfiable: DoNotSchedule
         labelSelector:
         matchLabels:
-          app.kubernetes.io/name: *app
+          app.kubernetes.io/instance: *app
     service:
       type: "LoadBalancer"
       annotations:
