@@ -26,6 +26,8 @@ spec:
         kind: Service
         apiVersion: v1
         metadata:
+          name: vector-aggregator
+          namespace: observability
           labels:
             expose-bgp: "true"
       target:
