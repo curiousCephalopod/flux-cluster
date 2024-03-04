@@ -11,15 +11,15 @@ spec:
   virtualRouters:
     - localASN: #{  bgp.local_asn  }#
       neighbors:
-        #% if bgp.peers #}
-        #% for item in bgp.peers #}
+        #% if bgp.peers %#
+        #% for item in bgp.peers %#
         - peerAddress: "#{  item  }#/24"
           peerASN: #{  bgp.peer_asn  }#
-        #% endfor #}
-        #% else #}
+        #% endfor %#
+        #% else %#
         - peerAddress: "#{  cluster.nodes.host_network | nthhost(1)  }#/24"
           peerASN: #{  bgp.peer_asn  }#
-        #% endif #}
+        #% endif %#
           eBGPMultihopTTL: 10
           connectRetryTimeSeconds: 120
           holdTimeSeconds: 90

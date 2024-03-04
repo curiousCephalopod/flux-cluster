@@ -7,10 +7,10 @@ metadata:
 spec:
   interval: 30m
   url: "#{  flux.github.address  }#"
-  #% if flux.github.private.enabled #}
+  #% if flux.github.private.enabled %#
   secretRef:
     name: github-deploy-key
-  #% endif #}
+  #% endif %#
   ref:
     branch: "#{  flux.github.branch|default('main', true)  }#"
   ignore: |

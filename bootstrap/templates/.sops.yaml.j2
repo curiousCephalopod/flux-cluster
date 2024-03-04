@@ -1,4 +1,4 @@
-#% if flux.enabled #}
+#% if flux.enabled %#
 ---
 creation_rules:
   - # IMPORTANT: This rule MUST be above the others
@@ -11,4 +11,4 @@ creation_rules:
     key_groups:
       - age:
           - "#{  flux.sops_age_public_key  }#"
-#% endif #}
+#% endif %#

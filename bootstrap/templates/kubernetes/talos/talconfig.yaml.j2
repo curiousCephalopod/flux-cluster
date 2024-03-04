@@ -11,50 +11,50 @@ clusterPodNets:
   - "#{  cluster.pod_network.split(',')[0]  }#"
 clusterSvcNets:
   - "#{  cluster.service_network.split(',')[0]  }#"
-#% if cluster.tls_sans | length > 0 #}
+#% if cluster.tls_sans | length > 0 %#
 additionalApiServerCertSans: &sans
-  #% for item in cluster.tls_sans #}
+  #% for item in cluster.tls_sans %#
   - "#{  item  }#"
-  #% endfor #}
+  #% endfor %#
 additionalMachineCertSans: *sans
-#% endif #}
+#% endif %#
 cniConfig:
   name: none
 
 nodes:
-  #% for item in cluster.nodes.inventory #}
+  #% for item in cluster.nodes.inventory %#
   - hostname: "#{  item.name  }#.${physical_domain}"
-    #% if item.installer is defined #}
+    #% if item.installer is defined %#
     talosImageURL: "#{  item.installer  }#"
-    #% endif #}
+    #% endif %#
     ipAddress: "#{  item.address  }#"
-    #% if item.talos_disk_device.startswith('/') #}
+    #% if item.talos_disk_device.startswith('/') %#
     installDisk: "#{  item.talos_disk_device  }#"
-    #% else #}
+    #% else %#
     installDiskSelector:
       serial: "#{  item.talos_disk_device  }#"
-    #% endif #}
-    #% if item.labels is defined #}
+    #% endif %#
+    #% if item.labels is defined %#
     nodeLabels: #{  item.labels  }#
-    #% endif #}
-    #% if item.extra_disks is defined #}
+    #% endif %#
+    #% if item.extra_disks is defined %#
     machineDisks: #{  item.extra_disks  }#
-    #% endif #}
-    #% if item.schematic_extensions is defined #}
+    #% endif %#
+    #% if item.schematic_extensions is defined %#
     schematic:
       customization:
         systemExtensions:
           officialExtensions:
-          #% for ext in item.schematic_extensions #}
+          #% for ext in item.schematic_extensions %#
             - #{  ext  }#
-          #% endfor #}
-    #% endif #}
+          #% endfor %#
+    #% endif %#
     controlPlane: #{  (item.controller) | string | lower  }#
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "#{  item.mac  }#"
         dhcp: false
-        #% if cluster.vlan #}
+        #% if cluster.vlan %#
         vlans:
           - vlanId: #{  cluster.vlan  }#
             addresses:
@@ -63,25 +63,25 @@ nodes:
             routes:
               - network: 0.0.0.0/0
                 gateway: "#{  cluster.nodes.host_network | nthhost(1)  }#"
-        #% else #}
+        #% else %#
         addresses:
           - "#{  item.address }}/#{ cluster.nodes.host_network.split('/') | last  }#"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0
             gateway: "#{  cluster.nodes.host_network | nthhost(1)  }#"
-        #% endif #}
-    #% if item.talos_patches is defined and item.talos_patches | length > 0 #}
+        #% endif %#
+    #% if item.talos_patches is defined and item.talos_patches | length > 0 %#
     patches:
-    #% for patch in item.talos_patches #}
+    #% for patch in item.talos_patches %#
       - |-
-#%- filter indent(width=8) #}
+#%- filter indent(width=8) %#
 
 #{  patch  }#
-#% endfilter #}
-    #% endfor #}
-    #% endif #}
-  #% endfor #}
+#% endfilter %#
+    #% endfor %#
+    #% endif %#
+  #% endfor %#
 
 patches:
   - |-
@@ -109,11 +109,11 @@ patches:
               - https://k8sio.${mirrors_domain}
 
 controlPlane:
-#% if cluster.schematics.enabled #}
+#% if cluster.schematics.enabled %#
   schematic:
     customization:
 #{  cluster.schematics.customization | indent(6, first=True)  }#
-#% endif #}
+#% endif %#
   patches:
     # Configure containerd
     - &containerdPatch |-
@@ -171,9 +171,9 @@ controlPlane:
       machine:
         network:
           nameservers:
-            #% for item in cluster.nodes.dns_servers | default(['1.1.1.1', '1.0.0.1']) #}
+            #% for item in cluster.nodes.dns_servers | default(['1.1.1.1', '1.0.0.1']) %#
             - #{  item  }#
-            #% endfor #}
+            #% endfor %#
 
     # Configure NTP
     - &ntpPatch |-
@@ -229,13 +229,13 @@ controlPlane:
             allowedKubernetesNamespaces:
               - system-upgrade
 
-#% if nodes.inventory | selectattr('controller', 'equalto', False) | list | length #}
+#% if nodes.inventory | selectattr('controller', 'equalto', False) | list | length %#
 worker:
-#% if cluster.schematics.enabled #}
+#% if cluster.schematics.enabled %#
   schematic:
     customization:
 #{  cluster.schematics.customization | indent(6, first=True)  }#
-#% endif #}
+#% endif %#
   patches:
     - *containerdPatch
     - *disableSearchDomainPatch
@@ -245,4 +245,4 @@ worker:
     - *nameserverPatch
     - *ntpPatch
     - *sysctlPatch
-#% endif #}
+#% endif %#
