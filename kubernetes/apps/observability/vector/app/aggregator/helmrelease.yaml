@@ -30,7 +30,7 @@ spec:
           - kind: Service
             apiVersion: v1
             metadata:
-              name: vector
+              name: vector-aggregator
               namespace: observability
               labels:
                 expose-bgp: "true"
