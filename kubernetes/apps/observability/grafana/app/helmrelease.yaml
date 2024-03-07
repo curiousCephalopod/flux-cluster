@@ -41,6 +41,11 @@ spec:
         secretName: certauthorities
         readOnly: true
         subPath: cosmos.pem
+      - name: change-ca
+        mountPath: /etc/ssl/certs/change-ca.pem
+        secretName: certauthorities
+        readOnly: true
+        subPath: change.pem
     env:
       GF_AUTH_GENERIC_OAUTH_API_URL: https://authentik.cronus.chaos/application/o/userinfo/
       GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://authentik.cronus.chaos/application/o/authorize/
