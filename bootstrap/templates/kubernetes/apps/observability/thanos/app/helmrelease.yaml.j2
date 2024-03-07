@@ -78,12 +78,15 @@ spec:
       ingress:
         enabled: true
         ingressClassName: cilium
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
         hostname: &host thanos-query-frontend.${CLUSTER_DOMAIN}
         tls: true
         pathType: Prefix
         extraTls:
           - hosts:
               - *host
+            secretName: thanos-query-frontend-tls-certificate
       networkPolicy:
         enabled: false
     query:
