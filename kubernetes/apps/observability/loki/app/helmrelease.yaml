@@ -86,10 +86,6 @@ spec:
                 prefix: loki_index_
                 period: 24h
         common:
-          instance_interface_names:
-            - enxd83add90fbb7
-            - enxf20bf9643323
-            - enx26a458e41bbd
           path_prefix: /var/loki
           replication_factor: 2
           storage:

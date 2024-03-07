@@ -86,10 +86,6 @@ spec:
                 prefix: loki_index_
                 period: 24h
         common:
-          instance_interface_names:
-#% for node in cluster.nodes.inventory %#
-            - enx#{ node.mac | replace(":", "") | lower }#
-#% endfor %#
           path_prefix: /var/loki
           replication_factor: 2
           storage:
