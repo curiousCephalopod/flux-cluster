@@ -80,6 +80,7 @@ spec:
         ingressClassName: cilium
         hostname: &host thanos-query-frontend.${CLUSTER_DOMAIN}
         tls: true
+        pathType: Prefix
         extraTls:
           - hosts:
               - *host
