@@ -81,7 +81,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
         hostname: &host thanos-query-frontend.${CLUSTER_DOMAIN}
-        tls: true
+        tls: false
         pathType: Prefix
         extraTls:
           - hosts:
