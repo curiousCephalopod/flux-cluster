@@ -58,7 +58,7 @@ spec:
           name: grafana-pg-app
           key: password
     envFromSecrets:
-      - name: grafana_secret
+      - name: grafana-secret
     grafana.ini:
       analytics:
         check_for_updates: false
