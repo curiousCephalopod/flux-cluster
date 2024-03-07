@@ -57,6 +57,8 @@ spec:
           http_listen_port: 3100
           grpc_listen_port: 9095
         memberlist:
+          bind_addr:
+            - ${MY_POD_ID}
           join_members: ["loki-memberlist"]
         limits_config:
           retention_period: 14d
@@ -108,10 +110,24 @@ spec:
           ring:
             kvstore:
               store: memberlist
+          extraArgs:
+            - -config.expand-env=true
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
         distributor:
           ring:
             kvstore:
               store: memberlist
+          extraArgs:
+            - -config.expand-env=true
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
         compactor:
           working_directory: /var/loki/boltdb-shipper-compactor
           shared_store: s3
@@ -119,12 +135,26 @@ spec:
           retention_enabled: true
           retention_delete_delay: 2h
           retention_delete_worker_count: 150
+          extraArgs:
+            - -config.expand-env=true
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
         ingester:
           max_chunk_age: 1h
           lifecycler:
             ring:
               kvstore:
                 store: memberlist
+          extraArgs:
+            - -config.expand-env=true
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
         analytics:
           reporting_enabled: false
     gateway:
@@ -143,6 +173,13 @@ spec:
           - hosts:
               - *host
             secretName: loki-tls-certificate
+      extraArgs:
+        - -config.expand-env=true
+      extraEnv:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
     read:
       replicas: 2
       extraVolumeMounts:
@@ -151,8 +188,22 @@ spec:
       extraVolumes:
         - name: rules
           emptyDir: {}
+      extraArgs:
+        - -config.expand-env=true
+      extraEnv:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
     write:
       replicas: 2
+      extraArgs:
+        - -config.expand-env=true
+      extraEnv:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
     backend:
       replicas: 2
       extraVolumeMounts:
@@ -166,6 +217,13 @@ spec:
             name: loki-alerting-rules
         - name: scratch
           emptyDir: {}
+      extraArgs:
+        - -config.expand-env=true
+      extraEnv:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
     monitoring:
       dashboards:
         annotations:
