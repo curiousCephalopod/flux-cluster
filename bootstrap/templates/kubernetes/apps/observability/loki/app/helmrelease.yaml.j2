@@ -110,24 +110,10 @@ spec:
           ring:
             kvstore:
               store: memberlist
-          extraArgs:
-            - -config.expand-env=true
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
         distributor:
           ring:
             kvstore:
               store: memberlist
-          extraArgs:
-            - -config.expand-env=true
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
         compactor:
           working_directory: /var/loki/boltdb-shipper-compactor
           shared_store: s3
@@ -135,26 +121,12 @@ spec:
           retention_enabled: true
           retention_delete_delay: 2h
           retention_delete_worker_count: 150
-          extraArgs:
-            - -config.expand-env=true
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
         ingester:
           max_chunk_age: 1h
           lifecycler:
             ring:
               kvstore:
                 store: memberlist
-          extraArgs:
-            - -config.expand-env=true
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
         analytics:
           reporting_enabled: false
     gateway:
