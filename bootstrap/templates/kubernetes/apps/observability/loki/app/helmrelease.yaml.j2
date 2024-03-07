@@ -136,6 +136,8 @@ spec:
       ingress:
         enabled: true
         ingressClassName: internal
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
         hosts:
           - host: &host loki.${CLUSTER_DOMAIN}
             paths:

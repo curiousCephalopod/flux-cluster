@@ -351,6 +351,8 @@ spec:
     ingress:
       enabled: true
       ingressClassName: cilium
+      annotations:
+        cert-manager.io/cluster-issuer: ca-issuer
       hosts:
         - &host grafana.${CLUSTER_DOMAIN}
       tls:
