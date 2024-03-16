@@ -46,7 +46,7 @@ spec:
               - *host
             secretName: rook-tls-certificate
     toolbox:
-      enabled: true
+      enabled: false
     configOverride: |
       [global]
       bdev_enable_discard = true
@@ -62,7 +62,7 @@ spec:
             cpu: 100m
             memory: 512Mi
           limits:
-            memory: 2Gi
+            memory: 1Gi
         mon:
           requests:
             cpu: 50m
@@ -74,7 +74,7 @@ spec:
             cpu: 500m
             memory: 2Gi
           limits:
-            memory: 6Gi
+            memory: 4Gi
         mgr-sidecar:
           requests:
             cpu: 50m
