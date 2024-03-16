@@ -64,6 +64,10 @@ spec:
           s3ForcePathStyle: true
           insecure: true
       auth_enabled: false
+      memberlistConfig:
+        bind_addr: []
+        join_members:
+          - loki-memberlist
     monitoring:
       dashboards:
         annotations:
