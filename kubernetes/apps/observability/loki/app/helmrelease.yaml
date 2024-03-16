@@ -64,9 +64,9 @@ spec:
           s3ForcePathStyle: true
           insecure: true
       auth_enabled: false
-    extraMemberlistConfig:
-      bind_addr:
-        - ${MY_POD_ID}
+      extraMemberlistConfig:
+        bind_addr:
+          - ${MY_POD_ID}
     monitoring:
       dashboards:
         annotations:
