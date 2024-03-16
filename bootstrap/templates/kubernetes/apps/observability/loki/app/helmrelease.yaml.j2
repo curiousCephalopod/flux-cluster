@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: loki
+spec:
+  interval: 30m
+  timeout: 15m
+  chart:
+    spec:
+      chart: loki
+      version: 5.43.6
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: vector-agent
+      namespace: observability
+    - name: vector-aggregator
+      namespace: observability
+  valuesFrom:
+    - targetPath: loki.storage.bucketNames.chunks
+      kind: ConfigMap
+      name: loki-bucket
+      valuesKey: BUCKET_NAME
+    - targetPath: loki.storage.bucketNames.ruler
+      kind: ConfigMap
+      name: loki-bucket
+      valuesKey: BUCKET_NAME
+    - targetPath: loki.storage.bucketNames.admin
+      kind: ConfigMap
+      name: loki-bucket
+      valuesKey: BUCKET_NAME
+    - targetPath: loki.storage.s3.endpoint
+      kind: ConfigMap
+      name: loki-bucket
+      valuesKey: BUCKET_HOST
+    - targetPath: loki.storage.s3.accessKeyId
+      kind: Secret
+      name: loki-bucket
+      valuesKey: AWS_ACCESS_KEY_ID
+    - targetPath: loki.storage.s3.secretAccessKey
+      kind: Secret
+      name: loki-bucket
+      valuesKey: AWS_SECRET_ACCESS_KEY
+  values:
+    loki:
+      storage:
+        type: s3
+        s3:
+          s3ForcePathStyle: true
+          insecure: true
+      auth_enabled: false
+    monitoring:
+      dashboards:
+        annotations:
+          grafana_folder: loki
+      serviceMonitor:
+        enabled: false
+        metricsInstance:
+          enabled: false
+      selfMonitoring:
+        enabled: false
+        grafanaAgent:
+          installOperator: false
+      lokiCanary:
+        enabled: false
+    test:
+      enabled: false
+    gateway:
+      ingress:
+        enabled: true
+        ingressClassName: internal
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
+        hosts:
+          - host: &host loki.${CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+            secretName: loki-tls-certificate
