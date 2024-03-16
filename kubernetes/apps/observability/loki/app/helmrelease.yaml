@@ -64,9 +64,6 @@ spec:
           s3ForcePathStyle: true
           insecure: true
       auth_enabled: false
-      extraMemberlistConfig:
-        bind_addr:
-          - ${MY_POD_ID}
     monitoring:
       dashboards:
         annotations:
@@ -100,7 +97,7 @@ spec:
             secretName: loki-tls-certificate
     read:
       extraArgs:
-        - -config.expand-env=true
+        - -memberlist.bind-addr=$(MY_POD_IP)
       extraEnv:
         - name: MY_POD_IP
           valueFrom:
@@ -108,7 +105,7 @@ spec:
               fieldPath: status.podIP
     write:
       extraArgs:
-        - -config.expand-env=true
+        - -memberlist.bind-addr=$(MY_POD_IP)
       extraEnv:
         - name: MY_POD_IP
           valueFrom:
@@ -116,7 +113,7 @@ spec:
               fieldPath: status.podIP
     backend:
       extraArgs:
-        - -config.expand-env=true
+        - -memberlist.bind-addr=$(MY_POD_IP)
       extraEnv:
         - name: MY_POD_IP
           valueFrom:
