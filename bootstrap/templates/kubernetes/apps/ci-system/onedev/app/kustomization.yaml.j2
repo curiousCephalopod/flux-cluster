@@ -5,9 +5,6 @@ kind: Kustomization
 resources:
   - ./cacerts.sops.yaml
   - ./certauthorities.sops.yaml
-  - ./initialadmin.yaml
-  - ./pgsuperuser.yaml
-  - ./onedevpostgres.yaml
+  - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ingress.yaml
-  - ./prometheusrules.yaml

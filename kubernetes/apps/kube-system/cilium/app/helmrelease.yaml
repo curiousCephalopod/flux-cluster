@@ -20,27 +20,10 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  uninstall:
-    keepHistory: false
+  valuesFrom:
+    - kind: ConfigMap
+      name: cilium-helm-values
   values:
-    autoDirectNodeRoutes: true
-    bgpControlPlane:
-      enabled: true
-    bpf:
-      masquerade: false
-    bgp:
-      enabled: false
-    cgroup:
-      automount:
-        enabled: false
-      hostRoot: /sys/fs/cgroup
-    cluster:
-      name: winds
-      id: 1
-    containerRuntime:
-      integration: containerd
-    endpointRoutes:
-      enabled: true
     hubble:
       enabled: true
       metrics:
@@ -78,32 +61,7 @@ spec:
             - hosts:
                 - "hubble.${CLUSTER_DOMAIN}"
               secretName: hubble-tls-certificate
-    ipam:
-      mode: kubernetes
-    ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"
-    k8sServiceHost: 127.0.0.1
-    k8sServicePort: 7445
-    kubeProxyReplacement: true
-    kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
-    l2announcements:
-      # https://github.com/cilium/cilium/issues/28985
-      enabled: false
-    loadBalancer:
-      algorithm: maglev
-      mode: dsr
-    l7Proxy: true
-    ingressController:
-      enabled: true
-      default: true
-      enforceHttps: true
-      loadbalancerMode: shared
-      service:
-        labels:
-          expose-bgp: "true"
-    localRedirectPolicy: true
     operator:
-      replicas: 1
-      rollOutPods: true
       prometheus:
         enabled: true
         serviceMonitor:
@@ -121,23 +79,3 @@ spec:
       enabled: true
       annotations:
         grafana_folder: Cilium
-    rollOutCiliumPods: true
-    routingMode: native
-    securityContext:
-      capabilities:
-        ciliumAgent:
-          - CHOWN
-          - KILL
-          - NET_ADMIN
-          - NET_RAW
-          - IPC_LOCK
-          - SYS_ADMIN
-          - SYS_RESOURCE
-          - DAC_OVERRIDE
-          - FOWNER
-          - SETGID
-          - SETUID
-        cleanCiliumState:
-          - NET_ADMIN
-          - SYS_ADMIN
-          - SYS_RESOURCE

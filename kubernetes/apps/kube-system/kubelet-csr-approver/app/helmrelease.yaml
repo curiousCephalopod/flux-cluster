@@ -20,11 +20,10 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  uninstall:
-    keepHistory: false
+  valuesFrom:
+    - kind: ConfigMap
+      name: kubelet-csr-approver-helm-values
   values:
-    providerRegex: ^(notus|zephyrus|eurus)$
-    bypassDnsResolution: true
     metrics:
       enable: true
       serviceMonitor:

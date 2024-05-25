@@ -16,17 +16,18 @@ spec:
         name: prometheus-community
         namespace: flux-system
   install:
-    crds: CreateReplace
+    crds: Skip
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: CreateReplace
+    crds: Skip
     remediation:
+      strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
   dependsOn:
+    - name: prometheus-operator-crds
+      namespace: observability
     - name: connect
       namespace: external-secrets
     - name: rook-ceph-cluster
@@ -35,7 +36,7 @@ spec:
       namespace: observability
   values:
     crds:
-      enabled: true
+      enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       ingress:
@@ -109,6 +110,9 @@ spec:
       thanosServiceMonitor:
         enabled: true
       prometheusSpec:
+        podMetadata:
+          annotations:
+            secret.reloader.stakater.com/reload: &secret thanos-objstore-config
         replicas: 2
         replicaExternalLabelName: __replica__
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
@@ -120,7 +124,7 @@ spec:
         enableAdminAPI: true
         walCompression: true
         enableFeatures:
-          - auto-gomaxprocs
+          - auto-gomemlimit
           - memory-snapshot-on-shutdown
           - new-service-discovery-manager
         thanos:
@@ -128,12 +132,17 @@ spec:
           version: "${THANOS_VERSION#v}"
           objectStorageConfig:
             existingSecret:
-              name: thanos-objstore-secret
-              key: objstore.yml
+              name: *secret
+              key: config
         retention: 2d
         retentionSize: 15GB
         externalLabels:
           cluster: main
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 1500Mi
         storageSpec:
           volumeClaimTemplate:
             spec:
@@ -169,29 +178,15 @@ spec:
             - action: replace
               regex: (.*)
               replacement: $1
-              sourceLabels:
-                - __meta_kubernetes_pod_node_name
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
               targetLabel: kubernetes_node
     grafana:
       enabled: false
       forceDeployDashboards: true
       sidecar:
         dashboards:
+          annotations:
+            grafana_folder: Kubernetes
           multicluster:
             etcd:
               enabled: true
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              version: v1
-              kind: ConfigMap
-              labelSelector: grafana_dashboard in (1)
-            patch: |-
-              apiVersion: v1
-              kind: ConfigMap
-              metadata:
-                name: not-used
-                namespace: not-used
-                annotations:
-                  grafana_folder: Kubernetes

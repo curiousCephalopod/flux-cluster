@@ -5,7 +5,5 @@ kind: Kustomization
 resources:
   - ./certauthorities.sops.yaml
   - ./externalsecret.yaml
-  - ./pgsuperuser.yaml
-  - ./grafanapostgres.yaml
   - ./helmrelease.yaml
   - ./prometheusrules.yaml

@@ -23,34 +23,34 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  postRenderers:
-    - kustomize:
-        patchesStrategicMerge:
-          - kind: Service
-            apiVersion: v1
-            metadata:
-              name: onedev-ssh
-              namespace: ci-system
-              labels:
-                expose-bgp: "true"
-          - kind: StatefulSet
-            apiVersion: apps/v1
-            metadata:
-              name: onedev
-              namespace: ci-system
-            spec:
-              template:
-                spec:
-                  containers:
-                    - name: onedevserver
-                      volumeMounts:
-                        - name: cacerts
-                          mountPath: /etc/ssl/certs/java/cacerts
-                          subPath: cacerts
-                  volumes:
-                    - name: cacerts
-                      secret:
-                        secretName: cacerts
+#  postRenderers:
+#    - kustomize:
+#        patchesStrategicMerge:
+#          - kind: Service
+#            apiVersion: v1
+#            metadata:
+#              name: onedev-ssh
+#              namespace: ci-system
+#              labels:
+#                expose-bgp: "true"
+#          - kind: StatefulSet
+#            apiVersion: apps/v1
+#            metadata:
+#              name: onedev
+#              namespace: ci-system
+#            spec:
+#              template:
+#                spec:
+#                  containers:
+#                    - name: onedevserver
+#                      volumeMounts:
+#                        - name: cacerts
+#                          mountPath: /etc/ssl/certs/java/cacerts
+#                          subPath: cacerts
+#                  volumes:
+#                    - name: cacerts
+#                      secret:
+#                        secretName: cacerts
   values:
     database:
       external: true
@@ -78,20 +78,20 @@ spec:
       - name: hibernate_connection_url
         valueFrom:
           secretKeyRef:
-            key: jdbc-uri
-            name: onedev-pg-app
+            key: hibernate_connection_url
+            name: onedev-secret
       - name: hibernate_connection_username
         valueFrom:
           secretKeyRef:
-            key: username
-            name: onedev-pg-app
+            key: hibernate_connection_username
+            name: onedev-secret
       - name: hibernate_connection_password
         valueFrom:
           secretKeyRef:
-            key: password
-            name: onedev-pg-app
+            key: hibernate_connection_password
+            name: onedev-secret
       - name: initial_password
         valueFrom:
           secretKeyRef:
-            key: password
-            name: onedev-admin-secret
+            key: initial_password
+            name: onedev-secret
