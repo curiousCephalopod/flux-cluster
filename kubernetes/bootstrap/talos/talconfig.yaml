@@ -16,6 +16,7 @@ cniConfig:
 
 nodes:
   - hostname: "notus.${physical_domain}"
+    talosImageURL: "factory.talos.dev/installer/ee21ef4a5ef808a9b7484cc0dda0f25075021691c8c09a276591eedb638ea1f9"
     ipAddress: "10.20.0.11"
     installDisk: "/dev/mmcblk0"
     controlPlane: true
@@ -29,20 +30,8 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: "10.20.0.1"
-    patches:
-      - |-
-        machine:
-          kubelet:
-            extraMounts:
-              - destination: /var/lib/longhorn
-                type: bind
-                source: /var/lib/longhorn
-                options:
-                  - bind
-                  - rshared
-                  - rw
   - hostname: "zephyrus.${physical_domain}"
-    talosImageURL: "ghcr.io/nberlee/installer:v1.6.5-rk3588"
+    talosImageURL: "ghcr.io/nberlee/installer:v1.7.2-rk3588"
     ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
     nodeLabels: {'role': 'storage-node'}
@@ -64,7 +53,7 @@ nodes:
             modules:
               - name: rockchip-cpufreq
   - hostname: "eurus.${physical_domain}"
-    talosImageURL: "ghcr.io/nberlee/installer:v1.6.5-rk3588"
+    talosImageURL: "ghcr.io/nberlee/installer:v1.7.2-rk3588"
     ipAddress: "10.20.0.13"
     installDisk: "/dev/mmcblk0"
     nodeLabels: {'role': 'storage-node'}
