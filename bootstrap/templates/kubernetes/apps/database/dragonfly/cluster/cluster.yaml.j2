@@ -5,6 +5,8 @@ kind: Dragonfly
 metadata:
   name: dragonfly
 spec:
+  nodeSelector:
+    role: storage-node 
   image: ghcr.io/dragonflydb/dragonfly:v1.18.1
   replicas: 3
   env:
@@ -22,6 +24,7 @@ spec:
     - maxSkew: 1
       topologyKey: kubernetes.io/hostname
       whenUnsatisfiable: DoNotSchedule
+      nodeAffinityPolicy: Honor
       labelSelector:
         matchLabels:
           app.kubernetes.io/part-of: dragonfly
