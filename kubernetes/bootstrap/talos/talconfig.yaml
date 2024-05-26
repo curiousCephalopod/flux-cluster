@@ -94,22 +94,6 @@ patches:
           permissions: 0644
           path: /etc/ssl/certs/ca-certificates
           op: append
-  - |-
-    machine:
-      registries:
-        mirrors:
-          docker.io:
-            endpoints:
-              - https://dockerio.${mirrors_domain}
-          gcr.io:
-            endpoints:
-              - https://gcrio.${mirrors_domain}
-          ghcr.io:
-            endpoints:
-              - https://ghcrio.${mirrors_domain}
-          registry.k8s.io:
-            endpoints:
-              - https://k8sio.${mirrors_domain}
 
 controlPlane:
   patches:
