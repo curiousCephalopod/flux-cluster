@@ -69,6 +69,8 @@ spec:
       persistence: &persistence
         enabled: true
         size: 10Gi
+      nodeSelector:
+        role: storage-node
     query:
       replicas: 2
       extraArgs: ["--alert.query-url=https://thanos.${CLUSTER_DOMAIN}"]
@@ -118,9 +120,13 @@ spec:
                   labels:
                     severity: critical
       persistence: *persistence
+      nodeSelector:
+        role: storage-node
     storeGateway:
       replicas: 2
       extraEnv: *extraEnv
       extraArgs: ["--index-cache.config=$(THANOS_CACHE_CONFIG)"]
       persistence: *persistence
       podAnnotations: *podAnnotations
+      nodeSelector:
+        role: storage-node
