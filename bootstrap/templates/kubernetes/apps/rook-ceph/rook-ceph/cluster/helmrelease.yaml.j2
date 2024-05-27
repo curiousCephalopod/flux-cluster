@@ -111,6 +111,12 @@ spec:
         mon: *placement
       mon:
         allowMultiplePerNode: true
+      mgr:
+        modules:
+          - name: pg_autoscaler
+            enabled: true
+          - name: rook
+            enabled: true
     cephBlockPools:
       - name: ceph-blockpool
         spec:
