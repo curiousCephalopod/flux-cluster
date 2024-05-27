@@ -67,6 +67,7 @@ spec:
         - --retention.resolution-5m=30d
         - --retention.resolution-1h=60d
       persistence: &persistence
+        storageClass: ceph-block
         enabled: true
         size: 10Gi
       nodeSelector:
