@@ -389,6 +389,11 @@ spec:
       ingressClassName: cilium
       annotations:
         cert-manager.io/cluster-issuer: ca-issuer
+        gethomepage.dev/description: Dashboard Visualiser
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Tools
+        gethomepage.dev/icon: grafana
+        gethomepage.dev/name: Grafana
       hosts:
         - &host grafana.${CLUSTER_DOMAIN}
       tls:

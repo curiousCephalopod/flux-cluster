@@ -81,6 +81,11 @@ spec:
         className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
+          gethomepage.dev/description: HTTP Header Viewer
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Tools
+          gethomepage.dev/icon: mdi-applicationarray
+          gethomepage.dev/name: Echo
         hosts:
           - host: &host "{{ .Release.Name }}.${CLUSTER_DOMAIN}"
             paths:

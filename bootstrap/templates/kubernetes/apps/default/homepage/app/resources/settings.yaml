@@ -1,0 +1,21 @@
+title: "Chaos: Home"
+start_url: https://homepage.${CLUSTER_DOMAIN}
+base: https://homepage.${CLUSTER_DOMAIN}
+language: en-GB
+color: gray
+background:
+  image: https://i.imgur.com/5DJSIvq.png
+  blur: sm
+showStats: true
+layout:
+  Apps:
+    icon: mdi-apps
+  Tools:
+    icon: mdi-wrench
+  Infra:
+    icon: mdi-server-security
+  External:
+    icon: mdi-open-in-new
+  Hosts:
+    icon: mdi-server
+    style: row

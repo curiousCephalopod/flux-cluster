@@ -23,3 +23,4 @@ resources:
   - ./vector.yaml
   - ./spegel.yaml
   - ./stevehipwell.yaml
+  - ./homepage.yaml

@@ -109,9 +109,14 @@ spec:
     gateway:
       ingress:
         enabled: true
-        ingressClassName: internal
+        ingressClassName: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
+          gethomepage.dev/description: Logging Aggregator
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Infra
+          gethomepage.dev/icon: loki
+          gethomepage.dev/name: Loki
         hosts:
           - host: &host loki.${CLUSTER_DOMAIN}
             paths:

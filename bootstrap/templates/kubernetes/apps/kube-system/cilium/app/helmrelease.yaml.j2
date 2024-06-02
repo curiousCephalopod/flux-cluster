@@ -55,6 +55,11 @@ spec:
           className: cilium
           annotations:
             cert-manager.io/cluster-issuer: ca-issuer
+            gethomepage.dev/description: Cilium Network Tracer
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/group: Tools
+            gethomepage.dev/icon: cilium
+            gethomepage.dev/name: Hubble
           hosts:
             - "hubble.${CLUSTER_DOMAIN}"
           tls:

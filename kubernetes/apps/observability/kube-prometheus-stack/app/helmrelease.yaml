@@ -41,6 +41,13 @@ spec:
     alertmanager:
       ingress:
         enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
+          gethomepage.dev/description: Cluster Alerting Manager
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Infra
+          gethomepage.dev/icon: alertmanager
+          gethomepage.dev/name: Alert Manager
         pathType: Prefix
         ingressClassName: cilium
         hosts:
@@ -98,6 +105,13 @@ spec:
     prometheus:
       ingress:
         enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
+          gethomepage.dev/description: Monitoring System
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Infra
+          gethomepage.dev/icon: prometheus
+          gethomepage.dev/name: Prometheus
         ingressClassName: cilium
         pathType: Prefix
         hosts:
