@@ -4,7 +4,8 @@ metadata:
   name: homepage
   namespace: default
   labels:
-    app.kubernetes.io/name: homepage
+    app.kubernetes.io/name: homepage#
+    cert-manager.io/cluster-issuer: ca-issuer
 spec:
   rules:
     - host: "homepage.${CLUSTER_DOMAIN}"
