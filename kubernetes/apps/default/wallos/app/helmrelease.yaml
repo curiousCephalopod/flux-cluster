@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: wallos
+  name: &app wallos
 spec:
   interval: 30m
   chart:
@@ -24,7 +24,7 @@ spec:
       retries: 3
   values:
     controllers:
-      main:
+      wallos:
         strategy: RollingUpdate
         containers:
           app:
@@ -50,13 +50,11 @@ spec:
             runAsUser: 65534
             runAsGroup: 65534
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 80
-    serviceMonitor:
-      main:
-        enabled: true
     ingress:
       main:
         enabled: true
@@ -72,8 +70,10 @@ spec:
           - host: &host "wallos.${CLUSTER_DOMAIN}"
             paths:
               - path: /
+                pathType: Prefix
                 service:
                   name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -85,3 +85,5 @@ spec:
         storageClass: ceph-block
         globalMounts:
           - path: /var/www/html/db
+        accessMode: ReadWriteOnce
+        size: 1Gi
