@@ -55,6 +55,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: alertmanager-tls-secret
       alertmanagerSpec:
         replicas: 2
         useExistingSecret: true
@@ -119,6 +120,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: prometheus-tls-secret
       thanosService:
         enabled: true
       thanosServiceMonitor:
