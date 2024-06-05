@@ -25,3 +25,4 @@ resources:
   - ./stevehipwell.yaml
   - ./homepage.yaml
   - ./clustersecret.yaml
+  - ./openebs.yaml
