@@ -25,6 +25,8 @@ spec:
   values:
     controllers:
       wallos:
+        annotations:
+          reloader.stakater.com/auto: "true"
         strategy: RollingUpdate
         containers:
           app:
@@ -35,15 +37,17 @@ spec:
               TZ: ${TIMEZONE}
             resources:
               requests:
-                cpu: 10m
+                cpu: 50m
               limits:
                 memory: 256Mi
+ 
     service:
       app:
         controller: *app
         ports:
           http:
             port: 80
+
     ingress:
       main:
         enabled: true
@@ -67,11 +71,9 @@ spec:
           - hosts:
               - *host
             secretName: wallos-tls-certificate
+   
     persistence:
       config:
-        enabled: true
-        storageClass: ceph-block
+        existingClaim: wallos
         globalMounts:
           - path: /var/www/html/db
-        accessMode: ReadWriteOnce
-        size: 1Gi

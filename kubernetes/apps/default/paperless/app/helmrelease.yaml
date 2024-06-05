@@ -1,0 +1,142 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: uninstall
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 65539
+        fsGroupChangePolicy: OnRootMismatch
+
+    controllers:
+      app:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            supplementalGroups:
+              - 65542
+
+        initContainers:
+          01-init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: "16.3"
+            envFrom:
+              - secretRef:
+                  name: paperless-dbinit-secret
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 2.9.0
+            env:
+              PAPERLESS_PORT: 8000
+              PAPERLESS_TIME_ZONE: ${TIMEZONE}
+              PAPERLESS_URL: https://paperless.${CLUSTER_DOMAIN}
+              PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local:6379
+              PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
+              PAPERLESS_FILENAME_FORMAT: "{created_year}/{document_type}/{created_year}-{created_month}-{created_day}_{title}"
+              PAPERLESS_FILENAME_FORMAT_REMOVE_NONE: "true"
+              PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+              PAPERLESS_ALLOW_ACCOUNT_SIGNUPS: "false"
+              PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "false"
+              USERMAP_GID: "65542"
+              # Configure folders
+              PAPERLESS_CONSUMPTION_DIR: /data/nas/incoming
+              PAPERLESS_DATA_DIR: /data/local/data
+              PAPERLESS_EXPORT_DIR: /data/nas/export
+              PAPERLESS_MEDIA_ROOT: /data/local/media
+              # Configure folder importer
+              PAPERLESS_CONSUMER_POLLING: "60"
+              PAPERLESS_CONSUMER_RECURSIVE: "true"
+              PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
+            envFrom:
+              - secretRef:
+                  name: paperless-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 11m
+                memory: 2048Mi
+              limits:
+                memory: 2048Mi
+
+    service:
+      app:
+        controller: paperless
+        ports:
+          http:
+            port: 8000
+
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Home
+          gethomepage.dev/name: Paperless
+          gethomepage.dev/icon: paperless
+          gethomepage.dev/description: Document OCR Software
+        hosts:
+          - host: &host "paperless.${CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: paperless-tls-certificate
+
+    persistence:
+      data:
+        existingClaim: paperless-data
+        advancedMounts:
+          paperless:
+            app:
+              - path: /data/local
+
+      nas:
+        type: nfs
+        server: elysium.${STORAGE_DOMAIN}
+        path: /export/paperless
+        globalMounts:
+          - path: /data/nas
