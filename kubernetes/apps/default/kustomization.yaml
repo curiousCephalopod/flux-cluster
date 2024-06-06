@@ -8,5 +8,3 @@ resources:
   - ./ca-secret.sops.yaml
   # Flux-Kustomizations
   - ./homepage/ks.yaml
-  - ./wallos/ks.yaml
-  - ./paperless/ks.yaml
