@@ -48,6 +48,10 @@ spec:
           gethomepage.dev/group: Infra
           gethomepage.dev/icon: alertmanager
           gethomepage.dev/name: Alert Manager
+          gethomepage.dev/pod-selector: >-
+            app.kubernetes.io/name in (
+              alertmanager
+            )
         pathType: Prefix
         ingressClassName: cilium
         hosts:
