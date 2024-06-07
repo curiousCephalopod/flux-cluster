@@ -106,7 +106,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
           gethomepage.dev/enabled: "true"
