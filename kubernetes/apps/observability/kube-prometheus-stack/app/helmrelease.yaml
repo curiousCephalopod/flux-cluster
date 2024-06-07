@@ -49,9 +49,7 @@ spec:
           gethomepage.dev/icon: alertmanager
           gethomepage.dev/name: Alert Manager
           gethomepage.dev/pod-selector: >-
-            app.kubernetes.io/name in (
-              alertmanager
-            )
+            app.kubernetes.io/name in ( alertmanager )
         pathType: Prefix
         ingressClassName: cilium
         hosts:
@@ -117,6 +115,9 @@ spec:
           gethomepage.dev/group: Infra
           gethomepage.dev/icon: prometheus
           gethomepage.dev/name: Prometheus
+          gethomepage.dev/pod-selector: >-
+            app.kubernetes.io/name in ( prometheus )
+            operator.prometheus.io/name in ( kube-prometheus-stack )
         ingressClassName: cilium
         pathType: Prefix
         hosts:
