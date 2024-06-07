@@ -108,6 +108,7 @@ spec:
         enabled: true
         className: nginx
         annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
           gethomepage.dev/enabled: "true"
           gethomepage.dev/group: Home
           gethomepage.dev/name: Paperless
