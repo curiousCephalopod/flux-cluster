@@ -110,7 +110,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Home
+          gethomepage.dev/group: Apps
           gethomepage.dev/name: Paperless
           gethomepage.dev/icon: paperless
           gethomepage.dev/description: Document OCR Software
