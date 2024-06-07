@@ -66,6 +66,7 @@ spec:
               PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
               PAPERLESS_ALLOW_ACCOUNT_SIGNUPS: "false"
               PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "false"
+              PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
               USERMAP_GID: "65542"
               # Configure folders
               PAPERLESS_CONSUMPTION_DIR: /data/nas/import
@@ -110,7 +111,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: App
+          gethomepage.dev/group: Apps
           gethomepage.dev/name: Paperless
           gethomepage.dev/icon: paperless
           gethomepage.dev/description: Document OCR Software
@@ -144,3 +145,13 @@ spec:
             app:
               - path: /data/nas
                 readOnly: false
+
+      certs:
+        type: secret
+        name: external-ca
+        advancedMounts:
+          paperless:
+            app:
+              - path: /etc/ssl/certs/cosmos-ca.pem
+                readOnly: true
+                subPath: ca.crt

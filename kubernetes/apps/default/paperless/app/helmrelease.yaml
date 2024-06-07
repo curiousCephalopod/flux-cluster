@@ -144,3 +144,13 @@ spec:
             app:
               - path: /data/nas
                 readOnly: false
+
+      certs:
+        type: secret
+        name: external-ca
+        advancedMounts:
+          paperless:
+            app:
+              - path: /etc/ssl/certs/cosmos-ca.pem
+                readOnly: true
+                subPath: ca.crt
