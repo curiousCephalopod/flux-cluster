@@ -135,7 +135,9 @@ spec:
               - path: /data/local
 
       nas:
-        existingClaim: paperless-nfs
+        type: nfs
+        server: elysium.${STORAGE_DOMAIN}
+        path: /export/paperless
         advancedMounts:
           paperless:
             app:
