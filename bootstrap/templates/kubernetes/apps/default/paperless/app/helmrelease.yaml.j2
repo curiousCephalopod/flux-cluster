@@ -138,6 +138,8 @@ spec:
         type: nfs
         server: elysium.${STORAGE_DOMAIN}
         path: /export/paperless
-        globalMounts:
-          - path: /data/nas
-            readOnly: false
+        advancedMounts:
+          paperless:
+            app:
+              - path: /data/nas
+                readOnly: false
