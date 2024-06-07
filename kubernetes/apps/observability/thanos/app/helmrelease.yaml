@@ -95,10 +95,7 @@ spec:
           gethomepage.dev/group: Infra
           gethomepage.dev/icon: thanos
           gethomepage.dev/name: Thanos
-          gethomepage.dev/pod-selector: >-
-            app.kubernetes.io/name in ( thanos )
-            app.kubernetes.io/instance in ( thanos )
-            app.kubernetes.io/component in ( query-frontend )
+          gethomepage.dev/app: thanos
         hosts:
           - &host thanos.${CLUSTER_DOMAIN}
         tls:

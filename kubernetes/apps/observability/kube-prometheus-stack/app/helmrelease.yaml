@@ -48,15 +48,14 @@ spec:
           gethomepage.dev/group: Infra
           gethomepage.dev/icon: alertmanager
           gethomepage.dev/name: Alert Manager
-          gethomepage.dev/pod-selector: >-
-            app.kubernetes.io/name in ( alertmanager )
+          gethomepage.dev/app: alertmanager
         pathType: Prefix
         ingressClassName: cilium
         hosts:
-          - &host alertmanager.${CLUSTER_DOMAIN}
+          - alertmanager.${CLUSTER_DOMAIN}
         tls:
           - hosts:
-              - *host
+              - alertmanager.${CLUSTER_DOMAIN}
             secretName: alertmanager-tls-secret
       alertmanagerSpec:
         replicas: 2
@@ -115,16 +114,14 @@ spec:
           gethomepage.dev/group: Infra
           gethomepage.dev/icon: prometheus
           gethomepage.dev/name: Prometheus
-          gethomepage.dev/pod-selector: >-
-            app.kubernetes.io/name in ( prometheus )
-            operator.prometheus.io/name in ( kube-prometheus-stack )
+          gethomepage.dev/app: prometheus
         ingressClassName: cilium
         pathType: Prefix
         hosts:
-          - &host prometheus.${CLUSTER_DOMAIN}
+          - prometheus.${CLUSTER_DOMAIN}
         tls:
           - hosts:
-              - *host
+              - prometheus.${CLUSTER_DOMAIN}
             secretName: prometheus-tls-secret
       thanosService:
         enabled: true
