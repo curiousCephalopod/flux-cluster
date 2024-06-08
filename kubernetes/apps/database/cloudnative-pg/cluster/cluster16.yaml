@@ -42,7 +42,7 @@ spec:
       destinationPath: s3://cloudnative-pg
       endpointURL: https://minio.${EXTERNAL_DOMAIN}
       endpointCA:
-        name: barman-ca
+        name: external-ca
         key: ca.crt
       serverName: &currentCluster postgres16-v1
       s3Credentials:
