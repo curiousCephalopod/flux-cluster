@@ -12,3 +12,4 @@ resources:
   - ./loki/ks.yaml
   - ./thanos/ks.yaml
   - ./vector/ks.yaml
+  - ./mqtt2prometheus/ks.yaml
