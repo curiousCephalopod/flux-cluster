@@ -48,8 +48,9 @@ spec:
               tag: v0.1.7
 
     persistence:
-      type: secret
-      name: mqtt2prometheus-secret
-      globalMounts:
-        - path: /config.yaml
-          subPath: config.yaml
+      config:
+        type: secret
+        name: mqtt2prometheus-secret
+        globalMounts:
+          - path: /config.yaml
+            subPath: config.yaml
