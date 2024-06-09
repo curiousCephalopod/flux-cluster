@@ -32,46 +32,63 @@ spec:
             supplementalGroups:
               - 65542
 
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: sonarr-secret
+
         containers:
           app:
             image:
               repository: ghcr.io/onedr0p/sonarr-develop
               tag: 4.0.5.1719@sha256:602af44d766a8c7c494d01fb79f6e7624aed58f0b86ffe10e1ecad280160a3df
             env:
-              COMPlus_EnableDiagnostics: "0"
               SONARR__APP__INSTANCENAME: Sonarr
-              SONARR__AUTH__APIKEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: sonarr-secret
-                    key: api_key
+              SONARR__APP__THEME: dark
               SONARR__AUTH__METHOD: External
               SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
-              SONARR__SERVER__PORT: &port 8989
+              SONARR__SERVER__PORT: &port 80
               SONARR__UPDATE__BRANCH: develop
+              TZ: ${TIMEZONE}
+            envFrom: *envFrom
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
+                custom: true
                 spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
-            resources:
-              requests:
-                cpu: 20m
-                memory: 512M
-              limits:
-                memory: 768M
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
@@ -105,10 +122,12 @@ spec:
 
     persistence:
       config:
-        existingClaim: sonarr-config
+        existingClaim: sonarr
+      tmp:
+        type: emptyDir
       media:
         type: nfs
         server: elysium.${STORAGE_DOMAIN}
         path: /export/media
         globalMounts:
-          - path: /data/nas-media
+          - path: /media

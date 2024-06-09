@@ -30,45 +30,62 @@ spec:
             fsGroup: 2000
             fsGroupChangePolicy: OnRootMismatch
 
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: prowlarr-secret
+
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-nightly
-              tag: 1.19.0.4545@sha256:f8b9febf323954dfebe774e5f01676273a70fcfa7e7f292ba8d1cf203ecded1e
+              repository: ghcr.io/onedr0p/prowlarr-develop
+              tag: 1.18.0.4543@sha256:3b7016455028840cae468f1227560e84926c47d1d30b4f73c269704b3f97362f
             env:
-              COMPlus_EnableDiagnostics: "0"
-              PROWLARR__INSTANCE_NAME: Prowlarr
-              PROWLARR__PORT: &port 9696
-              PROWLARR__LOG_LEVEL: info
-              PROWLARR__ANALYTICS_ENABLED: "False"
-              PROWLARR__AUTHENTICATION_METHOD: External
-              PROWLARR__API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: prowlarr-secret
-                    key: api_key
+              PROWLARR__APP__INSTANCENAME: Prowlarr
+              PROWLARR__APP__THEME: dark
+              PROWLARR__AUTH__METHOD: External
+              PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              PROWLARR__LOG__DBENABLED: "False"
+              PROWLARR__LOG__LEVEL: info
+              PROWLARR__SERVER__PORT: &port 80
+              PROWLARR__UPDATE__BRANCH: develop
+              TZ: ${TIMEZONE}
+            envFrom: *envFrom
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
+                custom: true
                 spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
-            resources:
-              requests:
-                cpu: 18m
-                memory: 128Mi
-              limits:
-                memory: 256Mi
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
@@ -102,4 +119,6 @@ spec:
 
     persistence:
       config:
-        existingClaim: prowlarr-config
+        type: emptyDir
+      tmp:
+        type: emptyDir
