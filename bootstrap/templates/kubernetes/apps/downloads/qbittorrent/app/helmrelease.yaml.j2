@@ -76,13 +76,8 @@ spec:
               VPN_ENDPOINT_PORT: 51820
               VPN_PORT_FORWARDING: "on"
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
-              WIREGUARD_ALLOWED_IPS: 0.0.0.0/0
-              WIREGUARD_IMPLEMENTATION: userspace
               FIREWALL_INPUT_PORTS: 8080
               FIREWALL_OUTBOUND_SUBNETS: 20.96.0.0/16,20.69.0.0/16 # Allow access to k8s subnets
-            envFrom:
-              - secretRef:
-                  name: qbittorrent-secret
             securityContext:
               capabilities:
                 add:
@@ -163,3 +158,11 @@ spec:
           qbittorrent:
             app:
               - path: /data/nas-media
+      wg0:
+        type: secret
+        name: qbittorrent-secret
+        advancedMounts:
+          qbittorrent:
+            gluetun:
+              - path: /gluetun/wireguard/wg0.conf
+                subPath: wg0.conf
