@@ -161,11 +161,11 @@ spec:
           qbittorrent:
             app:
               - path: /data/nas-media
-#      wg0:
-#        type: secret
-#        name: qbittorrent-secret
-#        advancedMounts:
-#          qbittorrent:
-#            gluetun:
-#              - path: /gluetun/wireguard/wg0.conf
-#                subPath: wg0.conf
+      wg0:
+        type: secret
+        name: qbittorrent-secret
+        advancedMounts:
+          qbittorrent:
+            gluetun:
+              - path: /gluetun/wireguard/wg0.conf
+                subPath: wg0.conf
