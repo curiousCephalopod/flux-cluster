@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app jellyseer
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      jellyseer:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          securityContext:
+            runAsUser: 2000
+            runAsGroup: 2000
+            runAsNonRoot: true
+            fsGroup: 2000
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65542
+
+        containers:
+          app:
+            image:
+              repository: fallenbagel/jellyseerr
+              tag: 10.9.0
+            env:
+              PUID: 2000
+              PGID: 2000
+              TZ: ${TIMEZONE}
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 2Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [65542]
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 5055
+
+    ingress:
+      app:
+        className: cilium
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
+          gethomepage.dev/description: Jellyfin Manager
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Apps
+          gethomepage.dev/icon: jellyseer
+          gethomepage.dev/name: Jellyseer
+        hosts:
+          - host: &host jellyseer.${CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: jellyseer-tls-certificate
+
+    persistence:
+      config:
+        existingClaim: jellyseer
+        globalMounts:
+          - path: /app/config
