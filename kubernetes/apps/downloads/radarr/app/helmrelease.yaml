@@ -107,7 +107,8 @@ spec:
       config:
         existingClaim: radarr-config
       media:
-        type: elysium.${STORAGE_DOMAIN}
+        type: nfs
+        server: elysium.${STORAGE_DOMAIN}
         path: /export/media
         globalMounts:
           - path: /data/nas-media
