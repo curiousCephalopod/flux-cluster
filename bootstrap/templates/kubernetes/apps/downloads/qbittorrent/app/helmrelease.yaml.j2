@@ -76,6 +76,7 @@ spec:
               VPN_ENDPOINT_PORT: 51820
               VPN_PORT_FORWARDING: "on"
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
+              WIREGUARD_MTU: 1000
               FIREWALL_INPUT_PORTS: 8080
               FIREWALL_OUTBOUND_SUBNETS: 20.96.0.0/16,20.69.0.0/16 # Allow access to k8s subnets
             securityContext:
