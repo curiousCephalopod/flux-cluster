@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
+  - ./ca-secret.sops.yaml
   # Flux-Kustomizations
   - ./jellyfin/ks.yaml
   - ./jellyseer/ks.yaml
