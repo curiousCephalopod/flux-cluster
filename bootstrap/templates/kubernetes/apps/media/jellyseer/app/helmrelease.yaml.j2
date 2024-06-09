@@ -92,6 +92,10 @@ spec:
             secretName: jellyseer-tls-certificate
 
     persistence:
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /.cache
       config:
         existingClaim: jellyseer
         globalMounts:
