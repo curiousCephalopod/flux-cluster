@@ -123,7 +123,7 @@ spec:
           cert-manager.io/cluster-issuer: ca-issuer
           gethomepage.dev/description: BitTorrent Client
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Apps
+          gethomepage.dev/group: Tools
           gethomepage.dev/icon: qbittorrent
           gethomepage.dev/name: qBitTorrent
         hosts:

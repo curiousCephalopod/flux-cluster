@@ -95,7 +95,7 @@ spec:
           cert-manager.io/cluster-issuer: ca-issuer
           gethomepage.dev/description: Download Manager
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Apps
+          gethomepage.dev/group: Tools
           gethomepage.dev/icon: autobrr
           gethomepage.dev/name: Autobrr
         hosts:
