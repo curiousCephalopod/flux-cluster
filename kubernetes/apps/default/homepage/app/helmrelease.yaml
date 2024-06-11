@@ -69,28 +69,31 @@ spec:
         type: configMap
         name: homepage-config
         advancedMounts:
-          app:
-            - path: /app/config/custom.css
-              subPath: custom.css
-            - path: /app/config/bookmarks.yaml
-              subPath: bookmarks.yaml
-            - path: /app/config/kubernetes.yaml
-              subPath: kubernetes.yaml
-            - path: /app/config/settings.yaml
-              subPath: settings.yaml
+          homepage:
+            app:
+              - path: /app/config/custom.css
+                subPath: custom.css
+              - path: /app/config/bookmarks.yaml
+                subPath: bookmarks.yaml
+              - path: /app/config/kubernetes.yaml
+                subPath: kubernetes.yaml
+              - path: /app/config/settings.yaml
+                subPath: settings.yaml
 
       secret:
         type: secret
         name: homepage-secret
         advancedMounts:
-          app:
-            - path: /app/config/services.yaml
-              subPath: services.yaml
-            - path: /app/config/widgets.yaml
-              subPath: widgets.yaml
+          homepage:
+            app:
+              - path: /app/config/services.yaml
+                subPath: services.yaml
+              - path: /app/config/widgets.yaml
+                subPath: widgets.yaml
 
       logs:
         type: emptyDir
         advancedMounts:
-          app:
-            - path: /app/config/logs
+          homepage:
+            app:
+              - path: /app/config/logs
