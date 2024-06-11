@@ -102,11 +102,6 @@ spec:
         className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
-          gethomepage.dev/description: TV Show Collection Manager
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Tools
-          gethomepage.dev/icon: sonarr
-          gethomepage.dev/name: Sonarr
         hosts:
           - host: &host sonarr.${CLUSTER_DOMAIN}
             paths:

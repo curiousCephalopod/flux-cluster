@@ -102,11 +102,6 @@ spec:
         className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
-          gethomepage.dev/description: Movie Collection Manager
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Tools
-          gethomepage.dev/icon: radarr
-          gethomepage.dev/name: Radarr
         hosts:
           - host: &host radarr.${CLUSTER_DOMAIN}
             paths:

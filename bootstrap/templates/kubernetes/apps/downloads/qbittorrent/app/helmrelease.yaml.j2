@@ -115,17 +115,18 @@ spec:
         ports:
           http:
             port: *port
+      
+      gluetun:
+        controller: qbittorrent
+        ports:
+          control:
+            port: 8000
 
     ingress:
       app:
         className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
-          gethomepage.dev/description: BitTorrent Client
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Tools
-          gethomepage.dev/icon: qbittorrent
-          gethomepage.dev/name: qBitTorrent
         hosts:
           - host: &host qbittorrent.${CLUSTER_DOMAIN}
             paths:

@@ -99,11 +99,6 @@ spec:
         className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
-          gethomepage.dev/description: Index Manager
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Tools
-          gethomepage.dev/icon: prowlarr
-          gethomepage.dev/name: Prowlarr
         hosts:
           - host: &host prowlarr.${CLUSTER_DOMAIN}
             paths:

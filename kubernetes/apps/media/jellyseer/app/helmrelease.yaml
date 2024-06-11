@@ -96,3 +96,9 @@ spec:
         existingClaim: jellyseer
         globalMounts:
           - path: /app/config
+      certs:
+        type: secret
+        name: external-ca
+        globalMounts:
+          - path: /etc/ssl/certs/cosmos.pem
+            subPath: ca.crt
