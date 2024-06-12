@@ -3,29 +3,26 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &appname radarr
+  name: &appname jellyseer
   namespace: flux-system
 spec:
-  targetNamespace: downloads
+  targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/apps/downloads/radarr/app"
+  path: "./kubernetes/apps/media/jellyseer/app"
   prune: true
   sourceRef:
     kind: GitRepository
-    name: #{ cluster.name }#
+    name: winds
   wait: false
   dependsOn:
     - name: rook-ceph-cluster
     - name: volsync
-    - name: external-secrets-stores
   postBuild:
     substitute:
       APP: *appname
-      VOLSYNC_CLAIM: radarr-config
-      VOLSYNC_CAPACITY: 15Gi
-      VOLSYNC_ACCESSMODES: ReadWriteMany
-      VOLSYNC_STORAGECLASS: ceph-filesystem
-      VOLSYNC_SNAPSHOTCLASS: csi-ceph-filesystem
+      APP_UID: "2000"
+      APP_GID: "2000"
+      VOLSYNC_CLAIM: *appname

@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: prowlarr
+  name: autobrr
 spec:
   interval: 30m
   chart:
@@ -15,20 +15,18 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-
   values:
     controllers:
-      prowlarr:
+      autobrr:
         annotations:
-          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: autobrr-secret,autobrr-db-secret
+          configmap.reloader.stakater.com/reload: autobrr-configmap
 
         pod:
           securityContext:
             runAsUser: 2000
             runAsGroup: 2000
             runAsNonRoot: true
-            fsGroup: 2000
-            fsGroupChangePolicy: OnRootMismatch
 
         initContainers:
           init-db:
@@ -37,23 +35,18 @@ spec:
               tag: 16
             envFrom: &envFrom
               - secretRef:
-                  name: prowlarr-secret
+                  name: autobrr-secret
 
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-develop
-              tag: 1.18.0.4543@sha256:3b7016455028840cae468f1227560e84926c47d1d30b4f73c269704b3f97362f
+              repository: ghcr.io/autobrr/autobrr
+              tag: v1.42.0
             env:
-              PROWLARR__APP__INSTANCENAME: Prowlarr
-              PROWLARR__APP__THEME: dark
-              PROWLARR__AUTH__METHOD: External
-              PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              PROWLARR__LOG__DBENABLED: "False"
-              PROWLARR__LOG__LEVEL: info
-              PROWLARR__SERVER__PORT: &port 80
-              PROWLARR__UPDATE__BRANCH: develop
-              TZ: ${TIMEZONE}
+              AUTOBRR__CHECK_FOR_UPDATES: "false"
+              AUTOBRR__HOST: 0.0.0.0
+              AUTOBRR__PORT: &port 7474
+              AUTOBRR__LOG_LEVEL: INFO
             envFrom: *envFrom
             probes:
               liveness: &probes
@@ -61,35 +54,36 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /ping
+                    path: /api/healthz/liveness
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
+                memory: 128Mi
               limits:
-                memory: 1Gi
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 65534
+        runAsGroup: 65534
         seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
-        controller: prowlarr
+        controller: autobrr
         ports:
           http:
             port: *port
@@ -99,8 +93,13 @@ spec:
         className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
+          gethomepage.dev/description: Download Manager
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Tools
+          gethomepage.dev/icon: autobrr
+          gethomepage.dev/name: Autobrr
         hosts:
-          - host: &host prowlarr.${CLUSTER_DOMAIN}
+          - host: &host autobrr.${CLUSTER_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
@@ -110,14 +109,4 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: prowlarr-tls-certificate
-
-    persistence:
-      config:
-        existingClaim: prowlarr-config
-        globalMounts:
-          - path: /config
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
+            secretName: autobrr-tls-certificate
