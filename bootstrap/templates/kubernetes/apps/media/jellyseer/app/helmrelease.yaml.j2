@@ -73,11 +73,6 @@ spec:
         className: cilium
         annotations:
           cert-manager.io/cluster-issuer: ca-issuer
-          gethomepage.dev/description: Jellyfin Manager
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Tools
-          gethomepage.dev/icon: overseer
-          gethomepage.dev/name: Jellyseer
         hosts:
           - host: &host jellyseer.${CLUSTER_DOMAIN}
             paths:

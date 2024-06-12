@@ -10,6 +10,8 @@ showStats: true
 layout:
   Apps:
     icon: mdi-apps
+  Managers:
+    icon: mdi-cog-outline
   Tools:
     icon: mdi-wrench
   Infra:
