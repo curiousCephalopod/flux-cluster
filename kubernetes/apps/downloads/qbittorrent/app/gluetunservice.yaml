@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: qbittorrent
+    app.kubernetes.io/name: qbittorrent
+    app.kubernetes.io/service: gluetun
+  name: gluetun
+spec:
+  ports:
+  - name: http-control
+    port: 8000
+    targetPort: 8000
+  selector:
+    app.kubernetes.io/component: qbittorrent
+    app.kubernetes.io/instance: qbittorrent
+    app.kubernetes.io/name: qbittorrent
