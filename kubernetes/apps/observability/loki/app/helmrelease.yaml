@@ -170,3 +170,5 @@ spec:
       enabled: false
     test:
       enabled: false
+    chunksCache:
+      allocatedMemory: 4096
