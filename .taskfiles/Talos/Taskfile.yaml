@@ -39,7 +39,7 @@ tasks:
 
   tweak-config:
     desc: Remove duped tag from config
-    cmd: sed -i 's/v1.7.2-rk3588:v1.7.2/v1.7.2-rk3588/' {{.TALHELPER_CLUSTER_DIR}}/*
+    cmd: sed -i 's/v1.7.4-rk3588:v1.7.4/v1.7.4-rk3588/' {{.TALHELPER_CLUSTER_DIR}}/*
 
   fetch-kubeconfig:
     desc: Fetch kubeconfig

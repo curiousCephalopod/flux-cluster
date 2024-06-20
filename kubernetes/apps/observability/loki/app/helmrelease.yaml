@@ -28,6 +28,8 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
+    - name: openebs
+      namespace: openebs-system
     - name: vector-agent
       namespace: observability
     - name: vector-aggregator
@@ -62,25 +64,17 @@ spec:
       podAnnotations:
         configmap.reloader.stakater.com/reload: *cephBucket
         secret.reloader.stakater.com/reload: *cephBucket
+      ingester:
+        chunk_encoding: snappy
       storage:
         type: s3
         s3:
           s3ForcePathStyle: true
           insecure: true
-      auth_enabled: false
       memberlistConfig:
         bind_addr: []
         join_members:
           - loki-memberlist
-      rulerConfig:
-        enable_api: true
-        enable_alertmanager_v2: true
-        alertmanager_url: http://alertmanager-operated.observability.svc.cluster.local:9093
-        storage:
-          type: local
-          local:
-            directory: /rules
-        rule_path: /rules/fake
       schemaConfig:
         configs:
           - from: "2024-04-01" # quote
@@ -90,23 +84,52 @@ spec:
             index:
               prefix: loki_index_
               period: 24h
-    monitoring:
-      dashboards:
-        annotations:
-          grafana_folder: Loki
-      serviceMonitor:
-        enabled: false
-        metricsInstance:
-          enabled: false
-      selfMonitoring:
-        enabled: false
-        grafanaAgent:
-          installOperator: false
-      lokiCanary:
-        enabled: false
-    test:
-      enabled: false
+      structuredConfig:
+        auth_enabled: false
+        server:
+          log_level: info
+          http_listen_port: 3100
+          grpc_listen_port: 9095
+          grpc_server_max_recv_msg_size: 8388608
+          grpc_server_max_send_msg_size: 8388608
+        limits_config:
+          ingestion_burst_size_mb: 128
+          ingestion_rate_mb: 64
+          max_query_parallelism: 100
+          per_stream_rate_limit: 64M
+          per_stream_rate_limit_burst: 128M
+          reject_old_samples: true
+          reject_old_samples_max_age: 168h
+          retention_period: 30d
+          shard_streams:
+            enabled: true
+          split_queries_by_interval: 1h
+        query_scheduler:
+          max_outstanding_requests_per_tenant: 4096
+        frontend:
+          max_outstanding_per_tenant: 4096
+        ruler:
+          enable_api: true
+          enable_alertmanager_v2: true
+          alertmanager_url: http://alertmanager-operated.observability.svc.cluster.local:9093
+          storage:
+            type: local
+            local:
+              directory: /rules
+          rule_path: /rules/fake
+        analytics:
+          reporting_enabled: false
+    backend:
+      extraArgs:
+        - -memberlist.bind-addr=$(MY_POD_IP)
+      extraEnv:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
     gateway:
+      image:
+        registry: ghcr.io
       ingress:
         enabled: true
         ingressClassName: cilium
@@ -137,11 +160,13 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-    backend:
-      extraArgs:
-        - -memberlist.bind-addr=$(MY_POD_IP)
-      extraEnv:
-        - name: MY_POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
+    sidecar:
+      image:
+        repository: ghcr.io/kiwigrid/k8s-sidecar
+      rules:
+        searchNamespace: ALL
+        folder: /rules/fake
+    lokiCanary:
+      enabled: false
+    test:
+      enabled: false
