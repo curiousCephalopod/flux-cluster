@@ -15,34 +15,6 @@ cniConfig:
   name: none
 
 nodes:
-  - hostname: "notus.${physical_domain}"
-    talosImageURL: "factory.talos.dev/installer/f8a903f101ce10f686476024898734bb6b36353cc4d41f348514db9004ec0a9d"
-    ipAddress: "10.20.0.11"
-    installDisk: "/dev/mmcblk0"
-    nodeLabels: {'hardware': 'rpi'}
-    controlPlane: true
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "d8:3a:dd:90:fb:b7"
-        dhcp: false
-        addresses:
-          - "10.20.0.11/24"
-        mtu: 1500
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "10.20.0.1"
-    patches:
-      - |-
-        machine:
-          kubelet:
-            extraMounts:
-              - destination: /var/openebs/local
-                type: bind
-                source: /var/openebs/local
-                options:
-                  - bind
-                  - rshared
-                  - rw
   - hostname: "zephyrus.${physical_domain}"
     talosImageURL: "registry.cronus.chaos/installer:v1.7.5-rk3588"
     ipAddress: "10.20.0.12"
