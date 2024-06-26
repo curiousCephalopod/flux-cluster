@@ -24,7 +24,7 @@ spec:
     requests:
       cpu: 500m
     limits:
-      memory: 1Gi
+      memory: 2Gi
   monitoring:
     enablePodMonitor: true
     # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
@@ -44,7 +44,7 @@ spec:
       endpointCA:
         name: external-ca
         key: ca.crt
-      serverName: &currentCluster postgres16-v1
+      serverName: &currentCluster postgres16-v2
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -52,3 +52,11 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: aws-secret-access-key
+  bootstrap:
+    recovery:
+      source: &previousCluster postgres16-v1
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *objectStore
+        serverName: *previousCluster

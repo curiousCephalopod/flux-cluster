@@ -16,9 +16,10 @@ cniConfig:
 
 nodes:
   - hostname: "notus.${physical_domain}"
-    talosImageURL: "factory.talos.dev/installer/98507a632d7b5e9d0203e40a0f688d26a3e9c2b9f3043c628a0c69e576ee953c"
+    talosImageURL: "factory.talos.dev/installer/f8a903f101ce10f686476024898734bb6b36353cc4d41f348514db9004ec0a9d"
     ipAddress: "10.20.0.11"
     installDisk: "/dev/mmcblk0"
+    nodeLabels: {'hardware': 'rpi'}
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -43,10 +44,10 @@ nodes:
                   - rshared
                   - rw
   - hostname: "zephyrus.${physical_domain}"
-    talosImageURL: "registry.cronus.chaos/installer:v1.7.4-rk3588"
+    talosImageURL: "registry.cronus.chaos/installer:v1.7.5-rk3588"
     ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
-    nodeLabels: {'role': 'storage-node'}
+    nodeLabels: {'hardware': 'rk1'}
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -76,10 +77,10 @@ nodes:
                   - rshared
                   - rw
   - hostname: "eurus.${physical_domain}"
-    talosImageURL: "registry.cronus.chaos/installer:v1.7.4-rk3588"
+    talosImageURL: "registry.cronus.chaos/installer:v1.7.5-rk3588"
     ipAddress: "10.20.0.13"
     installDisk: "/dev/mmcblk0"
-    nodeLabels: {'role': 'storage-node'}
+    nodeLabels: {'hardware': 'rk1'}
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -87,6 +88,39 @@ nodes:
         dhcp: false
         addresses:
           - "10.20.0.13/24"
+        mtu: 1500
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "10.20.0.1"
+    patches:
+      - |-
+        machine:
+          kernel:
+            modules:
+              - name: rockchip-cpufreq
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/openebs/local
+                type: bind
+                source: /var/openebs/local
+                options:
+                  - bind
+                  - rshared
+                  - rw
+  - hostname: "boreas.${physical_domain}"
+    talosImageURL: "registry.cronus.chaos/installer:v1.7.5-rk3588"
+    ipAddress: "10.20.0.14"
+    installDisk: "/dev/mmcblk0"
+    nodeLabels: {'hardware': 'rk1'}
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "f6:fc:26:c8:89:a0"
+        dhcp: false
+        addresses:
+          - "10.20.0.14/24"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0

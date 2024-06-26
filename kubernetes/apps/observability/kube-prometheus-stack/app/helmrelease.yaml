@@ -93,6 +93,7 @@ spec:
         - 10.20.0.11
         - 10.20.0.12
         - 10.20.0.13
+        - 10.20.0.14
     kubeEtcd:
       enabled: true
       endpoints: *cp
