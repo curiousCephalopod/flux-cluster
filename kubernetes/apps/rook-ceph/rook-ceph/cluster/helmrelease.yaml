@@ -97,15 +97,6 @@ spec:
         useAllDevices: true
         deviceFilter: nvme0n1
       placement:
-        all:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-                - matchExpressions:
-                    - key: role
-                      operator: In
-                      values:
-                        - storage-node
         mgr: &placement
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
