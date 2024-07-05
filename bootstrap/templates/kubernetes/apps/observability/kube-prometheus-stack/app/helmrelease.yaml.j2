@@ -32,6 +32,8 @@ spec:
       namespace: external-secrets
     - name: rook-ceph-cluster
       namespace: rook-ceph
+    - name: openebs
+      namespace: openebs-system
   values:
     crds:
       enabled: false
@@ -61,6 +63,7 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
+              storageClassName: openebs-hostpath
               resources:
                 requests:
                   storage: 1Gi
@@ -134,7 +137,7 @@ spec:
           - memory-snapshot-on-shutdown
           - new-service-discovery-manager
         retention: 2d
-        retentionSize: 15GB
+        retentionSize: 10GB
         resources:
           requests:
             cpu: 100m
@@ -143,9 +146,10 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
+              storageClassName: openebs-hostpath
               resources:
                 requests:
-                  storage: 20Gi
+                  storage: 15Gi
     nodeExporter:
       enabled: true
     prometheus-node-exporter:
