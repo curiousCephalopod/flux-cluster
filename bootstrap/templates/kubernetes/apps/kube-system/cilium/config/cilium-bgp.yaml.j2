@@ -36,5 +36,6 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: l3-pool
 spec:
-  cidrs:
+  allowFirstLastIPs: "Yes"
+  blocks:
     - cidr: "${LOADBALANCER_CIDR}"
