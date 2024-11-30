@@ -54,7 +54,7 @@ spec:
           app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.13.4
+              tag: 2.13.5
             env:
               REQUESTS_CA_BUNDLE: /etc/ssl/certs/cosmos-ca.pem
               PAPERLESS_PORT: 8000
