@@ -23,7 +23,6 @@ tasks:
             sops --encrypt --in-place {{.TALHELPER_SECRET_FILE}}
         fi
       - talhelper genconfig --config-file {{.TALHELPER_CONFIG_FILE}} --env-file {{.TALHELPER_ENV_FILE}} --secret-file {{.TALHELPER_SECRET_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}}
-      - task: tweak-config
       - talhelper gencommand apply --config-file {{.TALHELPER_CONFIG_FILE}} --env-file {{.TALHELPER_ENV_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} --extra-flags="--insecure" | bash
       - until talhelper gencommand bootstrap --config-file {{.TALHELPER_CONFIG_FILE}} --env-file {{.TALHELPER_ENV_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} | bash; do sleep 10; done
       - task: fetch-kubeconfig
@@ -36,10 +35,6 @@ tasks:
         sh: test -f {{.SOPS_CONFIG_FILE}}
       - msg: Missing Sops Age key file
         sh: test -f {{.AGE_FILE}}
-
-  tweak-config:
-    desc: Remove duped tag from config
-    cmd: sed -i 's/v1.7.5-rk3588:v1.7.5/v1.7.5-rk3588/' {{.TALHELPER_CLUSTER_DIR}}/*
 
   fetch-kubeconfig:
     desc: Fetch kubeconfig
