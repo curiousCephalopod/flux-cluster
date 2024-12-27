@@ -41,7 +41,7 @@ spec:
       endpointCA:
         name: external-ca
         key: ca.crt
-      serverName: &currentCluster postgres16-v2
+      serverName: &currentCluster postgres16-v3
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -51,7 +51,7 @@ spec:
           key: aws-secret-access-key
   bootstrap:
     recovery:
-      source: &previousCluster postgres16-v1
+      source: &previousCluster postgres16-v2
   externalClusters:
     - name: *previousCluster
       barmanObjectStore:

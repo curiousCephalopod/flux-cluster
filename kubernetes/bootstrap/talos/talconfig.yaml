@@ -16,7 +16,7 @@ cniConfig:
 
 nodes:
   - hostname: "zephyrus.${physical_domain}"
-    talosImageURL: "registry.cronus.chaos/installer:v1.7.5-rk3588"
+    talosImageURL: "factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:v1.9.1"
     ipAddress: "10.20.0.12"
     installDisk: "/dev/mmcblk0"
     nodeLabels: {'hardware': 'rk1'}
@@ -34,11 +34,6 @@ nodes:
     patches:
       - |-
         machine:
-          kernel:
-            modules:
-              - name: rockchip-cpufreq
-      - |-
-        machine:
           kubelet:
             extraMounts:
               - destination: /var/openebs/local
@@ -49,7 +44,7 @@ nodes:
                   - rshared
                   - rw
   - hostname: "eurus.${physical_domain}"
-    talosImageURL: "registry.cronus.chaos/installer:v1.7.5-rk3588"
+    talosImageURL: "factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:v1.9.1"
     ipAddress: "10.20.0.13"
     installDisk: "/dev/mmcblk0"
     nodeLabels: {'hardware': 'rk1'}
@@ -67,11 +62,6 @@ nodes:
     patches:
       - |-
         machine:
-          kernel:
-            modules:
-              - name: rockchip-cpufreq
-      - |-
-        machine:
           kubelet:
             extraMounts:
               - destination: /var/openebs/local
@@ -82,7 +72,7 @@ nodes:
                   - rshared
                   - rw
   - hostname: "boreas.${physical_domain}"
-    talosImageURL: "registry.cronus.chaos/installer:v1.7.5-rk3588"
+    talosImageURL: "factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:v1.9.1"
     ipAddress: "10.20.0.14"
     installDisk: "/dev/mmcblk0"
     nodeLabels: {'hardware': 'rk1'}
@@ -98,11 +88,6 @@ nodes:
           - network: 0.0.0.0/0
             gateway: "10.20.0.1"
     patches:
-      - |-
-        machine:
-          kernel:
-            modules:
-              - name: rockchip-cpufreq
       - |-
         machine:
           kubelet:

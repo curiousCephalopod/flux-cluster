@@ -12,7 +12,7 @@ kubeconform_args=(
     "-strict"
     "-ignore-missing-schemas"
     "-skip"
-    "Secret,ReplicationDestination,ReplicationSource"
+    "ExternalSecret,Secret,ReplicationDestination,ReplicationSource"
     "-schema-location"
     "default"
     "-schema-location"
