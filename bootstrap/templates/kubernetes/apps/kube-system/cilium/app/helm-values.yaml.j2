@@ -19,6 +19,7 @@ containerRuntime:
 # devices: eno+ eth+
 endpointRoutes:
   enabled: true
+envoy: false
 hubble:
   enabled: false
 ipam:
@@ -32,8 +33,7 @@ l2announcements:
   enabled: false # https://github.com/cilium/cilium/issues/28985
 loadBalancer:
   algorithm: maglev
-  mode: snat
-l7Proxy: true
+  mode: dsr
 ingressController:
   enabled: true
   default: true
@@ -66,3 +66,5 @@ securityContext:
       - NET_ADMIN
       - SYS_ADMIN
       - SYS_RESOURCE
+socketLB:
+  hostNamespaceOnly: true
