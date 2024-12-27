@@ -19,7 +19,8 @@ containerRuntime:
 # devices: eno+ eth+
 endpointRoutes:
   enabled: true
-envoy: false
+envoy:
+  enabled: false
 hubble:
   enabled: false
 ipam:
